@@ -1,0 +1,30 @@
+.uPage-Header .uPage-logo {
+    width: 200px;
+    height: 31px;
+    background: black;
+    color: white;
+    font-size: large;
+    margin: 16px 24px 16px 0;
+    float: left;
+    display: flex;
+    align-items: center;
+  }
+.uPage-Header .uPage-avatar-box{
+    width: 50px;
+    height: 50px;
+}
+.uPage-avatar-box .avatar{
+    position: relative;
+    top: -2px;
+}
+
+.Footer .backTop{      /* 回到顶部 */
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background-color: #1088e9;
+    color: #fff;
+    text-align: center;
+    font-size: 30px;
+  }

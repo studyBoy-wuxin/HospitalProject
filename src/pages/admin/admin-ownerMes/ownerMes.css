@@ -1,0 +1,15 @@
+
+  /* 内容区 */
+  .ownerMes-Content {
+    margin-left: 10px;
+     margin-top: 16px;
+    background: #fff;
+    padding: 24px;
+    height: 700px;
+    display: flex;
+    justify-content:center;
+  }
+  .ownerMes-Content .ownerMes-Content-box{
+    width: 700px;
+    height: 650px;
+  }

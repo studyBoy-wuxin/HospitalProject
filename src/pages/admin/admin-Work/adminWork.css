@@ -1,0 +1,13 @@
+ /* 内容区 */
+ .adminWork-Content {
+    margin: 16px 24px 0px 24px;
+    background: #fff;
+    padding: 24px;
+    height: 600px;
+    display: flex;
+    justify-content:center;
+  }
+  .adminWork-Content .adminWork-Content-box{
+    width: 1100px;
+    height: 600px;
+  }

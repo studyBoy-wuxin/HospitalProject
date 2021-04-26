@@ -1,0 +1,9 @@
+.InfoBox{
+    width: 1000px;
+    position: relative;
+    left: 65px;
+}
+
+.InfoBox .TimePick{
+    margin-top: 30px;
+}
