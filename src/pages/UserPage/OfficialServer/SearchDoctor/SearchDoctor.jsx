@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PubSub from 'pubsub-js'
-import DoctorInfo from '../../../../Component/User_Serve_Search/DoctorInfo/DoctorInfo.jsx'
-import SearchList from '../../../../Component/User_Serve_Search/SearchList/SearchHeader/SearchDocHeader/SearchDocHeader.jsx'
+import DoctorInfo from '../../../../Component/UserPage/OfficialServer/DoctorInfo/DoctorInfo.jsx'
+import SearchList from '../../../../Component/UserPage/OfficialServer/SearchList/SearchHeader/SearchDocHeader/SearchDocHeader.jsx'
 
 class SearchDoctor extends Component {
 
@@ -28,6 +28,12 @@ class SearchDoctor extends Component {
         PubSub.unsubscribe(this.token2);
     }
 
+    clearSelectedDocInfoInState = () => {
+        this.setState({ SelectedDocInfo: [] }, () => {
+            console.log(this.state.SelectedDocInfo)
+        })
+    }
+
     render() {
         const { ShowPage_Key, SelectedDocInfo } = this.state
 
@@ -38,7 +44,7 @@ class SearchDoctor extends Component {
             },
             {
                 //如果用户还没选择医生，那么就放个'',如果有值了，再把医生的信息传给DoctorInfo组件
-                content: SelectedDocInfo.length === 0 ? '' : <DoctorInfo SelectedDocInfo={SelectedDocInfo} />,
+                content: SelectedDocInfo.length === 0 ? '' : <DoctorInfo SelectedDocInfo={SelectedDocInfo} clearSelectedDocInfoInState={this.clearSelectedDocInfoInState} />,
                 key: 1,
             }
         ]

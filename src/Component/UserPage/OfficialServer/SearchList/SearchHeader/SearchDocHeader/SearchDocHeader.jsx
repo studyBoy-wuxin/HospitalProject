@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input } from 'antd';
-import { POST } from '../../../../../api/index.jsx'
+import { POST } from '../../../../../../api/index.jsx'
 import PublicList from '../../List/PublicList.jsx'
 
 const { Search } = Input;

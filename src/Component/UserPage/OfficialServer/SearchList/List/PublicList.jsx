@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { List } from 'antd';
 import './index.css'
-import doctor from '../../../../assets/Img/doctor.jpg'
-import { POST } from '../../../../api/index.jsx'
+import doctor from '../../../../../assets/Img/doctor.jpg'
+import { POST } from '../../../../../api/index.jsx'
 import PubSub from 'pubsub-js'
 
 //这是抽取出来的一个组件，只要传入AllDoctorInfo(搜索的医生)信息即可

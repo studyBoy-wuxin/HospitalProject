@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import SearchList from '../../../../Component/User_Serve_Search/SearchList/SearchHeader/SearchSubjectHeader/SearchSubjectHeader.jsx'
-import DoctorInfo from '../../../../Component/User_Serve_Search/DoctorInfo/DoctorInfo.jsx'
+import SearchList from '../../../../Component/UserPage/OfficialServer/SearchList/SearchHeader/SearchSubjectHeader/SearchSubjectHeader.jsx'
+import DoctorInfo from '../../../../Component/UserPage/OfficialServer/DoctorInfo/DoctorInfo.jsx'
 import PubSub from 'pubsub-js'
 
 

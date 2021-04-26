@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TreeSelect } from 'antd';
-import { GET, POST } from '../../../../../api/index.jsx'
+import { GET, POST } from '../../../../../../api/index.jsx'
 import PublicList from '../../List/PublicList.jsx'
 
 class SearchSubjectHeader extends Component {

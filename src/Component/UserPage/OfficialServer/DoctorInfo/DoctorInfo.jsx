@@ -5,9 +5,9 @@ import {
     StarFilled
 } from '@ant-design/icons'
 import './index.css'
-import { POST } from '../../../api/index.jsx'
+import { POST } from '../../../../api/index.jsx'
 import PubSub from 'pubsub-js'
-import memoryUtils from '../../../utils/memoryUtils'
+import memoryUtils from '../../../../utils/memoryUtils'
 
 const { Paragraph } = Typography;
 
