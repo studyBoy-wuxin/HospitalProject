@@ -3,7 +3,9 @@ import { List } from 'antd';
 import './index.css'
 import doctor from '../../../../../assets/Img/doctor.jpg'
 import { POST } from '../../../../../api/index.jsx'
-import PubSub from 'pubsub-js'
+import { connect } from 'react-redux'
+import { ChangeKeyAction } from '../../../../../redux/action/PageKeyAction'
+import { ChangeDocInfoAction } from '../../../../../redux/action/DocInfoAction'
 
 //这是抽取出来的一个组件，只要传入AllDoctorInfo(搜索的医生)信息即可
 class PublicList extends Component {
@@ -19,15 +21,15 @@ class PublicList extends Component {
             const data = { DocID: ID, type: 'doctor' }
             POST('/DoctorController/findDocterById', data)
                 .then(resp => {
-                    PubSub.publish('ShowPage_Key', 1)           //发送消息，SearchSubject.jsx接收
-                    PubSub.publish('SelectedDocInfo', resp.data)    //将获取到的医生信息发送给SearchSubject接收
+                    this.props.ChangeKey(1)                        // SearchSubject.jsx接收
+
+                    this.props.DocInfo(resp.data)                   //医生信息发送给SearchSubject接收
                 })
                 .catch(err => console.log(err.message))
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        // console.log(nextProps, prevState)
         if (nextProps.AllDoctorInfo !== prevState.AllDoctorInfo) {
             return {
                 AllDoctorInfo: nextProps.AllDoctorInfo,
@@ -67,4 +69,10 @@ class PublicList extends Component {
     }
 }
 
-export default PublicList;
+export default connect(
+    () => ({}),
+    {
+        ChangeKey: ChangeKeyAction,
+        DocInfo: ChangeDocInfoAction
+    }
+)(PublicList);

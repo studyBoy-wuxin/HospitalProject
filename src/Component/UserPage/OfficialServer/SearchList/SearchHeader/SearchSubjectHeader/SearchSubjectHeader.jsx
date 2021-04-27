@@ -26,7 +26,7 @@ class SearchSubjectHeader extends Component {
             .catch(err => err.message)
     }
 
-    //发送get请求获取到科室信息
+    //发送get请求获取到科室信息,并处理数据格式
     componentDidMount() {
         GET('/SubjectController/findAllSubject')
             .then(resp => this.setState({ Subject: resp.data }, () => {

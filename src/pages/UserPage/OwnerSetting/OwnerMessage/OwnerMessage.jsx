@@ -30,7 +30,7 @@ class OwnerMessage extends Component {
         ModalVisible: false,
         date: this.props.Patient.birth,
         telNum: '86',
-        AdressPrefix: '广东省/广州市/天河区/'
+        AddressPrefix: '广东省/广州市/天河区/'
     }
 
     //获取提交的数据
@@ -42,7 +42,7 @@ class OwnerMessage extends Component {
                 values.Birth = date
                 values.telephone = `${telNum}${values.telephone}`
                 values.PatID = this.props.Patient.patID
-                values.Adress = this.state.AdressPrefix + values.Adress
+                values.Address = this.state.AddressPrefix + values.Address
                 console.log('获取到的表单数据是：: ', values);
                 POST('/PatientController/UpdatePatient', values)
                     .then(
@@ -61,9 +61,7 @@ class OwnerMessage extends Component {
 
     componentDidMount() {
         this.token = PubSub.subscribe("ModalVisible", (_, ModalVisible) => {
-            this.setState({ ModalVisible }, () => {             //这是setState的回调函数，在修改了state后才执行
-                console.log('OwnerMessage收到的Patient是', this.state.ModalVisible)
-            })
+            this.setState({ ModalVisible })
         })
     }
 
@@ -72,20 +70,20 @@ class OwnerMessage extends Component {
     }
 
     //获取到地址选择的数据
-    getAdressPrefix = value => {
+    getAddressPrefix = value => {
         console.log('选择的地址是：', value)
         let result = ''
         value.forEach(date => {
             result += date + '/';
         })
         this.setState({
-            AdressPrefix: result
+            AddressPrefix: result
         })
         console.log(result)
     }
 
     render() {
-        const { patID, name, sex, age, telephone, birth, adress } = this.props.Patient
+        const { patID, name, sex, age, telephone, birth, address } = this.props.Patient
         const { getFieldDecorator } = this.props.form;
         //定义一个变量为一个Select节点，服务电话号码
         const prefixSelector = (
@@ -147,7 +145,7 @@ class OwnerMessage extends Component {
             {
                 key: '7',
                 FirstCol: '家庭住址:',
-                SecondCol: adress
+                SecondCol: address
             },
             {
                 key: '8',
@@ -232,17 +230,17 @@ class OwnerMessage extends Component {
                 key: '6',
                 FirstCol: '家庭住址',
                 SecondCol: (<Form.Item>
-                    {getFieldDecorator('Adress', {
+                    {getFieldDecorator('Address', {
                         rules: [{ required: true, message: '请输入家庭住址!' }],
                         initialValue: ''
                     })(<Input
                         addonBefore={(
                             <Cascader
                                 options={residences}
-                                onChange={this.getAdressPrefix}
+                                onChange={this.getAddressPrefix}
                                 expandTrigger='hover'
                             >
-                                <a href="/#">{this.state.AdressPrefix}</a>
+                                <a href="/#">{this.state.AddressPrefix}</a>
                             </Cascader>
                         )} />
                     )}

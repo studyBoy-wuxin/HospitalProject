@@ -6,8 +6,10 @@ import {
 } from '@ant-design/icons'
 import './index.css'
 import { POST } from '../../../../api/index.jsx'
-import PubSub from 'pubsub-js'
+// import PubSub from 'pubsub-js'
 import memoryUtils from '../../../../utils/memoryUtils'
+import { connect } from 'react-redux'
+import { ChangeKeyAction } from '../../../../redux/action/PageKeyAction'
 
 const { Paragraph } = Typography;
 
@@ -109,15 +111,15 @@ class DocInfo extends Component {
     //发送post请求，获取到该医生的时间信息
     componentDidMount() {
         //获取到由SearchSubject传递过来的值
-        this.setState({ SelectedDocInfo: this.props.SelectedDocInfo }, () => {
-            console.log("回调函数------------------------------------------")
+
+        this.setState({ SelectedDocInfo: this.state.SelectedDocInfo }, () => {
+
             const { docID } = this.state.SelectedDocInfo
             const data = { docId: docID }
             //定义一个数组，把POST请求获取来的医生工作信息按规律放入
             const mes = []
             POST('/DocInfoController/findAllInfoByDocID', data)
                 .then(resp => {
-                    console.log(resp.data)
                     resp.data.forEach((value, index) => {
                         value.treatBegin = value.treatBegin.substring(0, 5)
                         value.treatEnd = value.treatEnd.substring(0, 5)
@@ -142,12 +144,13 @@ class DocInfo extends Component {
 
     //在每次销毁DocInfo这个组件的时候，都要调用一下父组件SearchSubject中初始化state的方法
     componentWillUnmount() {
+        console.log("willummount---------------")
         this.props.clearSelectedDocInfoInState()
     }
 
     render() {
-        console.log("render-------------------")
-        console.log("render:", this.state.SelectedDocInfo)
+        console.log("------------------------------------DocInfo-------------------")
+
         const {
             branchSubject,
             introduce,
@@ -233,7 +236,7 @@ class DocInfo extends Component {
             <div className='InfoBox'>
                 <div className='docIntroduce'>
                     <PageHeader
-                        onBack={() => PubSub.publish('ShowPage_Key', 0)}
+                        onBack={() => this.props.ChangeKey(0)}
                         title={name}
                         style={{ border: '1px solid rgb(235, 237, 240)', }}
                         tags={<Tag color="blue">{position}</Tag>}
@@ -283,4 +286,9 @@ class DocInfo extends Component {
     }
 }
 
-export default DocInfo;
+export default connect(
+    state => ({ DocInfo: state.DocInfo }),
+    {
+        ChangeKey: ChangeKeyAction
+    }
+)(DocInfo);

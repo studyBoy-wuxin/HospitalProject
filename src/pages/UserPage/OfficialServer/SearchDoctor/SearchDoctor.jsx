@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PubSub from 'pubsub-js'
 import DoctorInfo from '../../../../Component/UserPage/OfficialServer/DoctorInfo/DoctorInfo.jsx'
 import SearchList from '../../../../Component/UserPage/OfficialServer/SearchList/SearchHeader/SearchDocHeader/SearchDocHeader.jsx'
+import { connect } from 'react-redux'
 
 class SearchDoctor extends Component {
 
@@ -10,28 +10,21 @@ class SearchDoctor extends Component {
         SelectedDocInfo: []     //将医生信息通过props传递给DoctorInfo组件
     }
 
-    //在componentDidMount这个生命周期中获取到所有科室的信息
-    componentDidMount() {
-        //接收SearchList发送来的数据
-        this.token = PubSub.subscribe('ShowPage_Key', (_, key) => {
-            this.setState({ ShowPage_Key: key })
-        })
-
-        this.token2 = PubSub.subscribe('SelectedDocInfo', (_, SelectedDocInfo) => {
-            this.setState({ SelectedDocInfo })
-        })
-    }
-
-    componentWillUnmount() {
-        //取消订阅
-        PubSub.unsubscribe(this.token);
-        PubSub.unsubscribe(this.token2);
-    }
-
     clearSelectedDocInfoInState = () => {
-        this.setState({ SelectedDocInfo: [] }, () => {
-            console.log(this.state.SelectedDocInfo)
-        })
+        this.setState({ SelectedDocInfo: [] })
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.ShowKey !== prevState.ShowPage_Key) {
+            return {
+                ShowPage_Key: nextProps.ShowKey,
+            };
+        }
+        if (nextProps.SelectedDocInfo.docID !== prevState.SelectedDocInfo.docID) {
+            console.log(nextProps, prevState)
+            return { SelectedDocInfo: nextProps.SelectedDocInfo }
+        }
+        return null;
     }
 
     render() {
@@ -60,4 +53,7 @@ class SearchDoctor extends Component {
     }
 }
 
-export default SearchDoctor;
+export default connect(
+    state => ({ ShowKey: state.PageKey, SelectedDocInfo: state.DocInfo }),
+    {}
+)(SearchDoctor);
