@@ -4,3 +4,5 @@
 export const SHOWPAGE_KEY = 'key'
 //DocInfo中的医生信息
 export const CHANGEDOCINFO = 'changeDocInfo'
+//病历单以及病人信息
+export const CHANGEPRESINFO = 'changePresInfo'

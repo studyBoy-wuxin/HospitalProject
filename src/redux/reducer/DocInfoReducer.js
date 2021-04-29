@@ -6,10 +6,8 @@ const docInfo = (preState = defaultState, action) => {       //暴露一个方�
     const { type, data } = action
     switch (type) {
         case CHANGEDOCINFO:
-            console.log("data----------------", data)
             return { ...data }
         default:
-            console.log("preState----------------", preState)
             return preState
     }
 }

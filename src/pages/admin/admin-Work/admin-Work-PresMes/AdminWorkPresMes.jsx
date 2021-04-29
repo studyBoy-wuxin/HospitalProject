@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Button, PageHeader, Descriptions, Statistic } from 'antd';
 import PubSub from 'pubsub-js'
-import MedSearchHeader from '../../admin-OperateMedicine/SearchHeader/MedSearchHeader.jsx'
+import OperateMed from './admin-OperateMedicine/OperateMed.jsx'
+import { connect } from 'react-redux'
 
+//这样做的好处就是，当key改变即返回的时候，组件就销毁，state中的数据都重置
 class PresMes extends Component {
 
     state = {
@@ -13,15 +15,18 @@ class PresMes extends Component {
 
     //判断props改变后是否与之前的props不同，如果不同那么就需要重新赋值
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.PrescriptionInfo !== prevState.PrescriptionInfo || nextProps.PatientInfo !== prevState.PatientInfo) {
+        console.log(nextProps, prevState)
+        //当props改变即Reducer中的数据改变的时候，就重新赋值
+        if (nextProps.PresInfo !== prevState.PresInfo) {
             return {
-                PrescriptionInfo: nextProps.PrescriptionInfo,
-                PatientInfo: nextProps.PatientInfo
-            };
+                PrescriptionInfo: nextProps.PresInfo.PrescriptionInfo,
+                PatientInfo: nextProps.PresInfo.PatientInfo
+            }
         }
         return null;
     }
 
+    //医生点击病人开始就诊时，获取当前的时间作为就诊时间
     componentDidMount() {
         const date = new Date();
         //年
@@ -36,10 +41,6 @@ class PresMes extends Component {
         const mm = JSON.stringify(date.getMinutes()).length === 1 ? '0' + date.getMinutes() : date.getMinutes();
         const TreatTime = year + "/" + month + "/" + day + "/  " + hh + ":" + mm;
         this.setState({ TreatTime })
-    }
-
-    componentWillUnmount() {
-        this.props.clearSelectedDocInfoInState()
     }
 
     render() {
@@ -111,12 +112,16 @@ class PresMes extends Component {
                     </PageHeader>
                 </div>
 
-                <div>
-                    <MedSearchHeader />
+                <div style={{ marginTop: '10px' }}>
+                    {/* 这里引入操作药品的组件 */}
+                    <OperateMed TreatTime={TreatTime} />
                 </div>
             </div>
         );
     }
 }
 
-export default PresMes;
+export default connect(
+    state => ({ PresInfo: state.PresInfo }),
+    {}
+)(PresMes);

@@ -10,27 +10,19 @@ const { Content } = Layout;
 class adminWork extends Component {
 
     state = {
-        key: 0,
-        AdminWork_PresMes: []
+        key: 0
     }
 
     componentDidMount() {
-
         this.token = PubSub.subscribe('AdminWork_Key', (_, key) => { this.setState({ key }) })
-        this.token2 = PubSub.subscribe('AdminWork_PresMes', (_, AdminWork_PresMes) => this.setState({ AdminWork_PresMes }))
     }
 
     componentWillUnmount() {
         PubSub.unsubscribe(this.token)
-        PubSub.unsubscribe(this.token2)
-    }
-
-    clearSelectedDocInfoInState = () => {
-        this.setState({ AdminWork_PresMes: [] })
     }
 
     render() {
-        const { key, AdminWork_PresMes } = this.state
+        const { key } = this.state
 
         const Contents = [
             {
@@ -39,7 +31,8 @@ class adminWork extends Component {
             },
             {
                 key: '1',
-                MyComponent: AdminWork_PresMes.length === 0 ? '' : <AdminWorkPresMes {...AdminWork_PresMes} clearSelectedDocInfoInState={this.clearSelectedDocInfoInState} />
+                MyComponent: <AdminWorkPresMes />
+
             },
         ]
         return (

@@ -1,65 +1,11 @@
 import React, { Component } from 'react';
 import { Transfer, Switch, Table, Tag, InputNumber, Select, Button, Modal, Form, message, Input } from 'antd';
 import difference from 'lodash/difference';
-import { GET, POST } from './api/index.jsx'
+import { GET, POST } from '../../../../../api/index.jsx'
 
 const { Option } = Select
 
-//定义一个数组，每次选项在穿梭到右边时，都放在RightArr中
-const RightArr = []
-
-const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => {    //这个restProps指的就是使用TableTransfer标签所传递过来的其他属性
-    return (
-        <Transfer {...restProps} showSelectAll={false} >
-            {({
-                direction,                          //表示是哪边的框
-                filteredItems,                         //这个是左边或者右边的框中所含有的元素
-                onItemSelectAll,
-                onItemSelect,
-                selectedKeys: listSelectedKeys,             //这个数组中存放的是已经打勾了的数据的key值
-            }) => {
-                const columns = direction === 'left' ? leftColumns : rightColumns;
-
-                const rowSelection = {
-                    //record指的是table中的每一条数据
-                    getCheckboxProps: record => ({ disabled: record.disabled }),      //方法返回了一个对象，这个对象的属性就是checkbox中的各个属性
-                    //selectedRows:表示的是所有已选择的行的对象所组成的数组
-                    onSelectAll(selected, selectedRows) {
-                        const treeSelectedKeys = selectedRows.map(({ key }) => key);           //treeSelectedKeys表是存放已选择的数据的key值
-
-                        //已选择的?如果是，那么就在treeSelectedKeys找除listSelectedKeys以外的数据
-                        const diffKeys = selected
-                            ? difference(treeSelectedKeys, listSelectedKeys)
-                            : difference(listSelectedKeys, treeSelectedKeys);
-                        onItemSelectAll(diffKeys, selected);
-                    },
-                    //record表示选中的数据对象
-                    //selected为true时为选中
-                    //selectedRows表示的是所选择的数据对象的数组
-                    onSelect(record, selected) {
-                        onItemSelect(record.key, selected);
-                    },
-                    selectedRowKeys: listSelectedKeys,
-                };
-                return (
-                    <Table
-                        rowSelection={rowSelection}
-                        columns={columns}
-                        /*这里必须判断一遍，如果方向不是左边而是右边的，要使用RightArr数组，
-                         * 这样做的目的是使左右的表格的数据源分离，否则每次更新数据，右侧所选择的都会清空 
-                         *我们需要统计所选择的药物信息，所以必须把右侧的数据源分离出来
-                         */
-                        dataSource={direction === 'left' ? filteredItems : RightArr}
-                        size="small"
-                        footer={direction === 'left' ? undefined : () => (<center><Button type="primary" htmlType="submit">生成病历单</Button></center>)}   //可设置样式
-                    />
-                );
-            }}
-        </Transfer>
-    )
-};
-
-class text extends Component {
+class MedSearchHeader extends Component {
     state = {
         targetKeys: [],                 //在右边集合的key
         disabled: false,
@@ -68,14 +14,15 @@ class text extends Component {
         AllType: [],                    //获取到所有的药物类型
         MedicinesList: [],            //通过type查找到的药物
         AllMedicinesList: [],
-        PresMedicineList: []
+        PresMedicineList: [],
+        RightArr: []                 //定义一个数组，每次选项在穿梭到右边时，都放在RightArr中
     };
 
     onChange = (targetKeys, direction, moveKeys) => {
         // console.log('targetKeys:', targetKeys)
         // console.log('direction:', direction)
         // console.log('moveKeys:', moveKeys)
-        const { MedicinesList } = this.state
+        const { MedicinesList, RightArr } = this.state
 
         if (direction === 'right') {
             MedicinesList.forEach((value) => {
@@ -109,10 +56,6 @@ class text extends Component {
         this.setState({ targetKeys });
     };
 
-    triggerShowSearch = showSearch => {
-        this.setState({ showSearch });
-    };
-
     //在componentDidMount这个生命周期中，我们需要发送两侧GET请求，分别是为了获取所有的药物类型以及所有的药品信息
     componentDidMount() {
         //获取所有的药物类型
@@ -133,7 +76,6 @@ class text extends Component {
                     value.Num = value.medID                 //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
                     return JSON.parse(JSON.stringify(value).replace(/medID/g, 'key'))       //然后把属性中的medID这个属性名改成key
                 })
-                console.log(MedicinesList)
                 this.setState({ MedicinesList })
             })
             .catch(err => console.log(err.message))
@@ -174,36 +116,49 @@ class text extends Component {
         }
     }
 
-    // finishPres = () => {
-    //     this.setState({ ModalVisible: true })
-    // }
-
     handleSubmit = e => {
         e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                let PresMedicineList = []
-                let MedNameList = []
-                //for循环，循环values对象中属性个数
-                for (let i = 0; i < Object.keys(values).length; i++) {
-                    RightArr.forEach(value => {
-                        if (value.key === Object.keys(values)[i]) {
-                            MedNameList.push(value)
+        const { RightArr } = this.state
+        if (RightArr.length === 0) {
+            Modal.warning({
+                title: '警告消息',
+                content: '目前病历单并无内容，请添加药品后生成病历单！！！',
+            });
+        } else {
+            this.props.form.validateFieldsAndScroll((err, values) => {
+                if (!err) {
+                    let PresMedicineList = []
+                    let MedListByKey = []
+                    //for循环，循环values对象中属性个数
+                    for (let i = 0; i < Object.keys(values).length; i++) {
+                        RightArr.forEach(item => {
+                            if (item.key === Object.keys(values)[i]) {
+                                MedListByKey.push(item)
+                            }
+                        })
+                        //Object.keys：遍历属性名，Object.values：遍历属性值
+                        PresMedicineList.push({
+                            key: MedListByKey[i].key,
+                            MedName: MedListByKey[i].medName,
+                            MedNum: Object.values(values)[i],
+                            price: Object.values(values)[i] * MedListByKey[i].price
+                        })
+                        if (i === Object.keys(values).length - 1) {
+                            let TotalPrice = 0
+                            for (let i = 0; i < PresMedicineList.length; i++) {
+                                TotalPrice += PresMedicineList[i].price
+                            }
+                            console.log("TotalPrice:", TotalPrice)
+                            PresMedicineList.push({ key: 'TotalPrice', MedName: '', MedNum: '', price: '总价：' + TotalPrice })
                         }
-                    })
-                    //Object.keys：遍历属性名，Object.values：遍历属性值
-                    PresMedicineList.push({
-                        key: MedNameList[i].key,
-                        MedName: MedNameList[i].medName,
-                        MedNum: Object.values(values)[i],
-                        price: Object.values(values)[i] * MedNameList[i].price
-                    })
+                    }
+                    console.log("MedListByKey:", MedListByKey)
+                    console.log("PresMedicineList:", PresMedicineList)
+                    this.setState({ ModalVisible: true, PresMedicineList })
                 }
-                console.log("MedNameList:", MedNameList)
-                console.log("PresMedicineList:", PresMedicineList)
-                this.setState({ ModalVisible: true, PresMedicineList })
-            }
-        });
+            });
+        }
+
     };
 
     onSure = () => {
@@ -211,8 +166,73 @@ class text extends Component {
     }
 
     render() {
-        const { targetKeys, disabled, showSearch } = this.state;
+        const { targetKeys, disabled, showSearch, RightArr } = this.state;
         const { getFieldDecorator } = this.props.form;
+
+        const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => {    //这个restProps指的就是使用TableTransfer标签所传递过来的其他属性
+            return (
+                <Transfer {...restProps} showSelectAll={false} >
+                    {({
+                        direction,                          //表示是哪边的框
+                        filteredItems,                         //这个是左边或者右边的框中所含有的元素
+                        onItemSelectAll,
+                        onItemSelect,
+                        selectedKeys: listSelectedKeys,             //这个数组中存放的是已经打勾了的数据的key值
+                    }) => {
+                        const columns = direction === 'left' ? leftColumns : rightColumns;
+
+                        const rowSelection = {
+                            //record指的是table中的每一条数据
+                            getCheckboxProps: record => ({ disabled: record.disabled }),      //方法返回了一个对象，这个对象的属性就是checkbox中的各个属性
+                            //selectedRows:表示的是所有已选择的行的对象所组成的数组
+                            onSelectAll(selected, selectedRows) {
+                                const treeSelectedKeys = selectedRows.map(({ key }) => key);           //treeSelectedKeys表是存放已选择的数据的key值
+
+                                //已选择的?如果是，那么就在treeSelectedKeys找除listSelectedKeys以外的数据
+                                const diffKeys = selected
+                                    ? difference(treeSelectedKeys, listSelectedKeys)
+                                    : difference(listSelectedKeys, treeSelectedKeys);
+                                onItemSelectAll(diffKeys, selected);
+                            },
+                            //record表示选中的数据对象
+                            //selected为true时为选中
+                            //selectedRows表示的是所选择的数据对象的数组
+                            onSelect(record, selected) {
+                                onItemSelect(record.key, selected);
+                            },
+                            selectedRowKeys: listSelectedKeys,
+                        };
+                        return (
+                            <Table
+                                rowSelection={rowSelection}
+                                pagination={{
+                                    hideOnSinglePage: true,
+                                    pageSize: 10,
+                                }}
+                                columns={columns}
+                                /*这里必须判断一遍，如果方向不是左边而是右边的，要使用RightArr数组，
+                                 * 这样做的目的是使左右的表格的数据源分离，否则每次更新数据，右侧所选择的都会清空 
+                                 *我们需要统计所选择的药物信息，所以必须把右侧的数据源分离出来
+                                 */
+                                dataSource={direction === 'left' ? filteredItems : RightArr}
+                                size="small"
+                                footer={direction === 'left' ?
+                                    () => (
+                                        <Switch
+                                            unCheckedChildren="showSearch"
+                                            checkedChildren="showSearch"
+                                            checked={showSearch}
+                                            onChange={() => this.setState({ showSearch: !showSearch })}
+                                            style={{ marginTop: 16 }}
+                                        />) :
+                                    () => (<center><Button type="primary" htmlType="submit">生成病历单</Button></center>)}
+                            />
+                        );
+                    }}
+                </Transfer>
+            )
+        };
+
         //左边的穿梭框的表格头
         const leftTableColumns = [
             {
@@ -283,7 +303,7 @@ class text extends Component {
                 <div>
                     <Select
                         showSearch
-                        style={{ width: 200, textAlign: 'center' }}
+                        style={{ width: '100%', marginBottom: '10px' }}
                         placeholder="Select a person"
                         optionFilterProp="children"
                         filterOption={(input, option) =>
@@ -320,13 +340,7 @@ class text extends Component {
                         locale={{ itemUnit: '项', itemsUnit: '项', searchPlaceholder: '请输入搜索内容' }}
                     />
                 </Form>
-                <Switch
-                    unCheckedChildren="showSearch"
-                    checkedChildren="showSearch"
-                    checked={showSearch}
-                    onChange={this.triggerShowSearch}
-                    style={{ marginTop: 16 }}
-                />
+
                 <Modal
                     title="确认药品信息"
                     visible={this.state.ModalVisible}
@@ -341,7 +355,10 @@ class text extends Component {
                         dataSource={this.state.PresMedicineList}
                         columns={columns}
                         showHeader={true}
-                        pagination={true}
+                        pagination={{
+                            hideOnSinglePage: true,
+                            pageSize: 10
+                        }}
                         footer={() => (
                             <div>
                                 <Input.TextArea
@@ -361,4 +378,4 @@ class text extends Component {
     }
 }
 
-export default Form.create()(text);
+export default Form.create()(MedSearchHeader);
