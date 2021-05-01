@@ -27,11 +27,11 @@ class adminWork extends Component {
         const Contents = [
             {
                 key: '0',
-                MyComponent: <AdminWorkPresList />
+                MyComponent: <AdminWorkPresList />              //展示已挂号的病人列表
             },
             {
                 key: '1',
-                MyComponent: <AdminWorkPresMes />
+                MyComponent: <AdminWorkPresMes />               //展示病人信息的组件
 
             },
         ]

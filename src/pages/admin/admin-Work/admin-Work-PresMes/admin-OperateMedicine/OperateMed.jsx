@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Transfer, Switch, Table, Tag, InputNumber, Select, Button, Modal, Form, message, Input } from 'antd';
 import difference from 'lodash/difference';
 import { GET, POST } from '../../../../../api/index.jsx'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import PubSub from 'pubsub-js'
 
 const { Option } = Select
 
@@ -13,11 +16,24 @@ class MedSearchHeader extends Component {
         ModalVisible: false,
         AllType: [],                    //获取到所有的药物类型
         MedicinesList: [],            //通过type查找到的药物
-        AllMedicinesList: [],
-        PresMedicineList: [],
-        RightArr: []                 //定义一个数组，每次选项在穿梭到右边时，都放在RightArr中
+        AllMedicinesList: [],           //所有的药物列表
+        PresMedicineList: [],              //处方单中的药物列表
+        RightArr: [],                //定义一个数组，每次选项在穿梭到右边时，都放在RightArr中
+        PresInfo: {},
+        TotalPrice: -1
     };
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        //当props改变即Reducer中的数据改变的时候，就重新赋值
+        if (nextProps.PresInfo !== prevState.PresInfo) {
+            return {
+                PresInfo: nextProps.PresInfo.PrescriptionInfo,
+            }
+        }
+        return null;
+    }
+
+    //穿梭框数据改变的回调
     onChange = (targetKeys, direction, moveKeys) => {
         // console.log('targetKeys:', targetKeys)
         // console.log('direction:', direction)
@@ -73,7 +89,7 @@ class MedSearchHeader extends Component {
                 const MedicinesList = resp.data.map(value => {
                     delete value.address            //先删除不需要的address属性
                     value.disabled = value.inventory === 0 ? true : false
-                    value.Num = value.medID                 //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
+                    value.Num = { ID: value.medID, max: value.inventory }                //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
                     return JSON.parse(JSON.stringify(value).replace(/medID/g, 'key'))       //然后把属性中的medID这个属性名改成key
                 })
                 this.setState({ MedicinesList })
@@ -92,10 +108,11 @@ class MedSearchHeader extends Component {
                     const MedicinesList = resp.data.map(value => {
                         delete value.address            //先删除不需要的address属性
                         value.disabled = value.inventory === 0 ? true : false
-                        value.Num = value.medID                                 //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
+                        value.Num = { ID: value.medID, max: value.inventory }                                //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
                         return JSON.parse(JSON.stringify(value).replace(/medID/g, 'key'))       //然后把属性中的medID这个属性名改成key
                     })
-                    console.log(MedicinesList)
+
+
                     this.setState({ MedicinesList })
                 })
                 .catch(err => console.log(err.message))
@@ -107,7 +124,7 @@ class MedSearchHeader extends Component {
                     const MedicinesList = resp.data.map(value => {
                         delete value.address            //先删除不需要的address属性
                         value.disabled = value.inventory === 0 ? true : false
-                        value.Num = value.medID                         //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
+                        value.Num = { ID: value.medID, max: value.inventory }                         //将medID作为属性名，后续药品量作为属性值，然后使用对象的方法取出
                         return JSON.parse(JSON.stringify(value).replace(/medID/g, 'key'))       //然后把属性中的medID这个属性名改成key
                     })
                     this.setState({ MedicinesList })
@@ -125,35 +142,40 @@ class MedSearchHeader extends Component {
                 content: '目前病历单并无内容，请添加药品后生成病历单！！！',
             });
         } else {
-            this.props.form.validateFieldsAndScroll((err, values) => {
+            this.props.form.validateFieldsAndScroll((err, values) => {          //这里的values采用的是{medID:num}这样的对象形式，标识有多少这个药品
                 if (!err) {
+                    console.log("handleSubmit----values---:", values)
                     let PresMedicineList = []
-                    let MedListByKey = []
+                    let MedListByKey = []                               //这个是根据key也就是medID找到的药品列表
                     //for循环，循环values对象中属性个数
-                    for (let i = 0; i < Object.keys(values).length; i++) {
+                    delete values.DocSuggestion                     //除了删除我还想到的是可以在if结束时，清空value
+                    console.log("handleSubmit----values---after:", values)
+                    for (let i = 0; i < Object.keys(values).length; i++) {      //Object.keys(values)就是获取到values中所有属性名的数组
+                        //这个时候，遍历右边数组，取出key与values中的medID相同的药品元素，存放到MedListByKey中
                         RightArr.forEach(item => {
                             if (item.key === Object.keys(values)[i]) {
                                 MedListByKey.push(item)
                             }
                         })
                         //Object.keys：遍历属性名，Object.values：遍历属性值
+                        //这时候，整理出病历单中存在的药品信息
                         PresMedicineList.push({
                             key: MedListByKey[i].key,
                             MedName: MedListByKey[i].medName,
                             MedNum: Object.values(values)[i],
                             price: Object.values(values)[i] * MedListByKey[i].price
                         })
+                        //在遍历达到最后一次循环的时候，计算出总价
                         if (i === Object.keys(values).length - 1) {
                             let TotalPrice = 0
                             for (let i = 0; i < PresMedicineList.length; i++) {
                                 TotalPrice += PresMedicineList[i].price
                             }
-                            console.log("TotalPrice:", TotalPrice)
+                            //再把总价添加到PresMedicineList中，因为这个数组是用来渲染数据的，加上后可以展示总价即可
                             PresMedicineList.push({ key: 'TotalPrice', MedName: '', MedNum: '', price: '总价：' + TotalPrice })
+                            this.setState({ TotalPrice })
                         }
                     }
-                    console.log("MedListByKey:", MedListByKey)
-                    console.log("PresMedicineList:", PresMedicineList)
                     this.setState({ ModalVisible: true, PresMedicineList })
                 }
             });
@@ -161,8 +183,52 @@ class MedSearchHeader extends Component {
 
     };
 
-    onSure = () => {
-        message.success("成功！")
+    //onSure就是确定药品信息无误了
+    onSure = e => {
+        e.preventDefault();
+        const { PresMedicineList, PresInfo, TotalPrice, RightArr } = this.state
+
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                //需要提交的存放在病历单中的药品信息  (需要存到数据库的数据)
+                const MedList = PresMedicineList.map((item) => {
+                    return { PresID: parseInt(PresInfo.presID), MedID: item.key, MedNum: parseInt(item.MedNum) }
+                })
+                //因为在handleSubmit方法中的PresMedicineList的最后一个对象元素，是为了存放总价并进行渲染的，所以MedList接收后需要删除最后一个元素
+                MedList.splice(MedList.length - 1, 1)
+                //需要提交的病历单信息  (也就是需要更新的病历单信息：医生建议，治疗时间，总价)
+                const PresMes = {
+                    PresID: PresInfo.presID,
+                    DoctorSuggestion: values.DocSuggestion,
+                    TreatmentTime: this.props.TreatTime,
+                    TotalPrice
+                }
+
+                axios({
+                    method: 'POST',
+                    url: 'http://localhost:8888/HospitalProject/MedInPrescriptionController/insert',
+                    params: PresMes,
+                    data: [...MedList],
+                }).then(resp => {
+                    if (resp.data === "处方单已成功生成！") {
+                        message.success(resp.data)
+                        //在处方单成功生成之后，我们需要将右边的穿梭数组移回左边，所以直接调用穿梭框变化时出发的onChange回调函数
+                        //ResetKeyArr就是需要移回左边的药物元素信息的key值
+                        const ResetKeyArr = RightArr.map(item => {
+                            return item.key
+                        })
+                        console.log(ResetKeyArr)
+                        this.onChange([], 'left', ResetKeyArr)
+
+                        PubSub.publish('TotalPrice', TotalPrice)
+                        this.setState({ ModalVisible: false })
+                    } else {
+                        message.error(resp.data)
+                    }
+                }).catch(err => message.error(err.message))
+            }
+        });
+
     }
 
     render() {
@@ -237,7 +303,7 @@ class MedSearchHeader extends Component {
         const leftTableColumns = [
             {
                 dataIndex: 'medName',
-                title: 'medName',
+                title: '药品名称',
             },
             {
                 dataIndex: 'type',
@@ -246,7 +312,7 @@ class MedSearchHeader extends Component {
             },
             {
                 dataIndex: 'description',
-                title: 'Description',
+                title: '描述',
             },
         ];
         //右边的穿梭框的表格头
@@ -258,20 +324,22 @@ class MedSearchHeader extends Component {
             {
                 dataIndex: 'Num',
                 title: '数量',
-                render: (Num) => (<Form.Item >
-                    {getFieldDecorator(Num, {
-                        rules: [
-                            { required: true, message: '请选择药品量!' }
-                        ],
-                        initialValue: 1,
-                        validateTrigger: 'onBlur'
-                    })(<InputNumber
-                        min={0}
-                        max={20}
-                        step={1}
-                        onChange={this.changeNum}
-                    />)}
-                </Form.Item>)
+                render: (Num) => (
+                    <Form.Item >
+                        {getFieldDecorator(Num.ID, {
+                            rules: [
+                                { required: true, message: '请选择药品量!' }
+                            ],
+                            initialValue: 1,
+                            validateTrigger: 'onBlur'
+                        })(<InputNumber
+                            min={0}
+                            max={Num.max}
+                            step={1}
+                            onChange={this.changeNum}
+                        />)}
+                    </Form.Item>
+                )
             },
             {
                 dataIndex: 'price',
@@ -361,13 +429,24 @@ class MedSearchHeader extends Component {
                         }}
                         footer={() => (
                             <div>
-                                <Input.TextArea
-                                    autoSize={true}
-                                    placeholder='请输入医嘱'
-                                    allowClear={true}
-                                    style={{ marginBottom: '10px' }}
-                                />
-                                <center><Button type="primary" onClick={this.onSure}>确定</Button></center>
+                                <Form onSubmit={this.onSure}>
+                                    <Form.Item >
+                                        {getFieldDecorator('DocSuggestion', {
+                                            rules: [
+                                                { required: true, message: '请填写医嘱!' }
+                                            ],
+                                            initialValue: '每天三次，每次一片',
+                                            validateTrigger: 'onBlur'
+                                        })(<Input.TextArea
+                                            autoSize={true}
+                                            placeholder='请输入医嘱'
+                                            allowClear={true}
+                                            style={{ marginBottom: '10px' }}
+                                        />)}
+                                    </Form.Item>
+
+                                    <center><Button type="primary" htmlType='submit'>确定</Button></center>
+                                </Form>
                             </div>
                         )}
                         bordered
@@ -378,4 +457,7 @@ class MedSearchHeader extends Component {
     }
 }
 
-export default Form.create()(MedSearchHeader);
+export default connect(
+    state => ({ PresInfo: state.PresInfo }),
+    {}
+)(Form.create()(MedSearchHeader));

@@ -33,6 +33,7 @@ class AdminWorkList extends Component {
     }
 
     componentDidMount() {
+        console.log("componentDidMount-------------------------------")
         const { Doctor } = this.state
         //在根据医生ID获取到处方单的信息后，根据处方单中的PatID找到病人有关的信息
         POST('/PrescriptionController/findPrescriptionByDocID', { DocID: Doctor.empID })

@@ -59,32 +59,40 @@ class MySider extends Component {
                         <span>Option 1</span>
                     </Menu.Item>
 
-                    <Menu.Item key="2">
-                        <Icon type="desktop" />
-                        <span>
-                            <Link to='/admin/adminWork'>查看工作</Link>
-                        </span>
-                    </Menu.Item>
-
                     <SubMenu key="sub1" title={                 //title可以设置SubMenu的图标
+                        <span>
+                            <Icon type="desktop" />
+                            <span>查看工作</span>
+                        </span>
+                    }>
+                        <Menu.Item key="3">
+                            <Link to='/admin/adminWork'>已挂号的病人</Link>
+                        </Menu.Item>
+                        <Menu.Item key="4">
+                            <Link to='/admin/adminWork'>已就诊完成的病人</Link>
+                        </Menu.Item>
+                    </SubMenu>
+
+
+                    <SubMenu key="sub2" title={                 //title可以设置SubMenu的图标
                         <span>
                             <Icon type="user" />
                             <span>个人中心</span>
                         </span>
                     }>
-                        <Menu.Item key="3">
+                        <Menu.Item key="5">
                             <Link to='/admin/OwnerMes'>个人信息</Link>
                         </Menu.Item>
-                        <Menu.Item key="4">修改密码</Menu.Item>
+                        <Menu.Item key="6">修改密码</Menu.Item>
                     </SubMenu>
 
-                    <SubMenu key="sub2" title={
+                    <SubMenu key="sub3" title={
                         <span>
                             <Icon type="user" />
                             <span>Work</span>
                         </span>
                     }>
-                        <Menu.Item key="6">Team 1</Menu.Item>
+                        <Menu.Item key="7">Team 1</Menu.Item>
                         <Menu.Item key="8">Team 2</Menu.Item>
                     </SubMenu>
 
