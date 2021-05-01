@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import memoryUtils from '../../../../utils/memoryUtils'
-import textImg from '../../../../assets/Img/text.gif'
-import { POST } from '../../../../api/index.jsx'
+import memoryUtils from '../../../../../utils/memoryUtils'
+import textImg from '../../../../../assets/Img/text.gif'
+import { POST } from '../../../../../api/index.jsx'
 import { Divider, List } from 'antd';
 import PubSub from 'pubsub-js'
 import { connect } from 'react-redux'
-import { ChangePresInfoAction } from '../../../../redux/action/PresInfoAction'
+import { ChangePresInfoAction } from '../../../../../redux/action/PresInfoAction'
 
 class AdminWorkList extends Component {
 
