@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, PageHeader, Descriptions, Statistic } from 'antd';
 import PubSub from 'pubsub-js'
-import OperateMed from './admin-OperateMedicine/OperateMed.jsx'
+import OperateMed from './OperateMedicine/OperateMed.jsx'
 import { connect } from 'react-redux'
 
 //这样做的好处就是，当key改变即返回的时候，组件就销毁，state中的数据都重置

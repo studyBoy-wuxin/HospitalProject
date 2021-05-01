@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import './adminWork.css'
-import AdminWorkPresList from './admin-Work-PresList/AdminWorkPresList'
-import AdminWorkPresMes from './admin-Work-PresMes/AdminWorkPresMes.jsx'
+import AdminWorkPresList from './BookedPresList/BookedPresList'
+import AdminWorkPresMes from './BookedPresList/PresMes/AdminWorkPresMes.jsx'
 import PubSub from 'pubsub-js'
 
 const { Content } = Layout;

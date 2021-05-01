@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Transfer, Switch, Table, Tag, InputNumber, Select, Button, Modal, Form, message, Input } from 'antd';
 import difference from 'lodash/difference';
-import { GET, POST } from '../../../../../api/index.jsx'
+import { GET, POST } from '../../../../../../api/index.jsx'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
