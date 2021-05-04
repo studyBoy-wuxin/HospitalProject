@@ -218,10 +218,11 @@ class MedSearchHeader extends Component {
                         const ResetKeyArr = RightArr.map(item => {
                             return item.key
                         })
-                        console.log(ResetKeyArr)
                         this.onChange([], 'left', ResetKeyArr)
 
                         PubSub.publish('TotalPrice', TotalPrice)
+                        PubSub.publish('AdminWork_Key', 0)
+
                         this.setState({ ModalVisible: false })
                     } else {
                         message.error(resp.data)
@@ -397,13 +398,7 @@ class MedSearchHeader extends Component {
                         onChange={this.onChange}
                         //接收 inputValue option 两个参数，当 option 符合筛选条件时，应返回 true，反之则返回 false
                         //用于搜索
-                        filterOption={(inputValue, option) => {
-
-                            const a = option.medName.indexOf(inputValue) !== -1 || option.type.indexOf(inputValue) !== -1
-                            console.log(inputValue, option, option.medName.indexOf(inputValue), a)
-                            return a
-                        }
-                        }
+                        filterOption={(inputValue, option) => option.medName.indexOf(inputValue) !== -1 || option.type.indexOf(inputValue) !== -1}
                         leftColumns={leftTableColumns}
                         rightColumns={rightTableColumns}
                         locale={{ itemUnit: '项', itemsUnit: '项', searchPlaceholder: '请输入搜索内容' }}

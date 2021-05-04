@@ -39,6 +39,7 @@ class PresList extends Component {
     }
 
     componentDidMount() {
+        console.log('componentDidMount-------------------');
         const { Doctor } = this.state
         const { type } = this.props
 
@@ -53,7 +54,6 @@ class PresList extends Component {
             type === 'FinishedPresList' ? findAllPresMesByPresIDList : '', { DocID: Doctor.empID })
             .then(resp => {
                 //这些都是挂了这个医生的 所有 病单以及病人的信息
-                console.log(resp.data)
                 if (resp.data !== 'Nothing') {
                     this.setState({
                         AllPresInfo: resp.data.PresList,
@@ -67,8 +67,6 @@ class PresList extends Component {
     render() {
         const { AllPresInfo, patBasicMesList } = this.state
         const { type } = this.props
-        console.log(AllPresInfo)
-        console.log(patBasicMesList);
         return (
             <div>
                 <div>

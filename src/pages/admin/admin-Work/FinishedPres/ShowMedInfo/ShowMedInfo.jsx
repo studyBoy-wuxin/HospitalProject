@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Table } from 'antd'
-import { POST } from './api/index.jsx'
+import { POST } from '../../../../../api/index.jsx'
+import { connect } from 'react-redux'
 
 const columns = [
     { title: '药品名称', dataIndex: 'name', key: 'name' },
     { title: '药品数量', dataIndex: 'Num', key: 'Num' },
     { title: '价格', dataIndex: 'Price', key: 'Price' },
 ];
+
+
 
 class ShowMedInfo extends Component {
 
@@ -18,7 +21,9 @@ class ShowMedInfo extends Component {
     }
 
     componentDidMount() {
-        POST("/MedicineController/findMedInfoByPresID", { PresID: 6 })
+        const { PresInfo } = this.props
+        console.log('props中的PresInfo ------------------------', PresInfo);
+        POST("/MedicineController/findMedInfoByPresID", { PresID: PresInfo.PrescriptionInfo.presID })
             .then(resp => {
                 // console.log(resp.data)
                 this.setState({ medInPresList: resp.data.medInPresList, medInfoList: resp.data.medInfoList }, () => {
@@ -51,14 +56,12 @@ class ShowMedInfo extends Component {
 
     render() {
         const { dataSource, TotalPrice } = this.state
-        console.log("dataSource:  ", dataSource)
-        console.log(TotalPrice);
         return (
             <div>
                 <Table
                     columns={columns}
-                    expandedRowRender={record => <p style={{ margin: 0 }}>{record.description}</p>}
-                    dataSource={this.state.dataSource}
+                    expandedRowRender={record => <p style={{ margin: 0 }}>{`描述:  ${record.description}`}</p>}
+                    dataSource={dataSource}
                     footer={() => (
                         <span style={{ position: 'relative', left: '75%' }}>{`总价：${TotalPrice}`}</span>
                     )}
@@ -68,4 +71,7 @@ class ShowMedInfo extends Component {
     }
 }
 
-export default ShowMedInfo;
+export default connect(
+    state => ({ PresInfo: state.PresInfo }),
+    {}
+)(ShowMedInfo);

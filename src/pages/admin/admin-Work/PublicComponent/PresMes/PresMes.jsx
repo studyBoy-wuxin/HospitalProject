@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, PageHeader, Descriptions, Statistic } from 'antd';
+import { PageHeader, Descriptions, Statistic } from 'antd';
 import PubSub from 'pubsub-js'
 import OperateMed from '../../BookedPres/OperateMedicine/OperateMed.jsx'
+import ShowMedInfo from '../../FinishedPres/ShowMedInfo/ShowMedInfo.jsx'
 import { connect } from 'react-redux'
 
 //这样做的好处就是，当key改变即返回的时候，组件就销毁，state中的数据都重置
@@ -46,6 +47,10 @@ class PresMes extends Component {
             this.setState({ TotalPrice })
         })
         this.setState({ TreatTime })
+    }
+
+    componentWillUnmount() {
+        PubSub.unsubscribe(this.token)
     }
 
     render() {
@@ -118,13 +123,6 @@ class PresMes extends Component {
                         //如果props中的type是Booked传来的，那就使用AdminWork_Key，否则就是Finished传来的，就用AdminFinishedWork_Key
                         onBack={() => PubSub.publish(type === 'AdminWorkPresList' ? 'AdminWork_Key' : 'AdminFinishedWork_Key', 0)}
                         title="患者就诊单"
-                        extra={[
-                            <Button key="3">Operation</Button>,
-                            <Button key="2">Operation</Button>,
-                            <Button key="1" type="primary">
-                                Primary
-                            </Button>,
-                        ]}
                     >
                         <Content extra={extraContent}>{renderContent}</Content>
                     </PageHeader>
@@ -133,7 +131,7 @@ class PresMes extends Component {
                 <div style={{ marginTop: '10px' }}>
                     {/* 这里引入操作药品的组件 */}
                     {
-                        type === 'AdminWorkPresList' ? <OperateMed TreatTime={TreatTime} /> : 'aaa'
+                        type === 'AdminWorkPresList' ? <OperateMed TreatTime={TreatTime} /> : <ShowMedInfo />
                     }
                 </div>
             </div>
