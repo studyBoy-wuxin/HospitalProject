@@ -23,7 +23,7 @@ class PublicList extends Component {
                 .then(resp => {
                     this.props.ChangeKey(1)                        // SearchSubject.jsx接收
 
-                    this.props.DocInfo(resp.data)                   //医生信息发送给SearchSubject接收
+                    this.props.ChangeDocInfo(resp.data)                   //医生信息发送给SearchSubject接收
                 })
                 .catch(err => console.log(err.message))
         }
@@ -73,6 +73,6 @@ export default connect(
     () => ({}),
     {
         ChangeKey: ChangeKeyAction,
-        DocInfo: ChangeDocInfoAction
+        ChangeDocInfo: ChangeDocInfoAction
     }
 )(PublicList);

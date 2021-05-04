@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Layout, BackTop, Icon, Avatar } from 'antd';
 import ownerMes from './admin-ownerMes/ownerMes.jsx'
-import adminWork from './admin-Work/adminWork.jsx'
+import adminBookedWork from './admin-Work/BookedPres/adminBookedWork.jsx'
+import adminFinishedWork from './admin-Work/FinishedPres/adminFinishedWork.jsx'
 import MySider from './MySider/Sider';
 import { Route, Redirect } from 'react-router-dom'
 import memoryUtils from '../../utils/memoryUtils'
@@ -40,7 +41,8 @@ class admin extends Component {
                     </Header>
 
                     <Route path='/admin/OwnerMes' component={ownerMes} />
-                    <Route path='/admin/adminWork' component={adminWork} />
+                    <Route path='/admin/BookedPres' component={adminBookedWork} />
+                    <Route path='/admin/FinishedPres' component={adminFinishedWork} />
 
                     <Footer className="Footer">
                         <div>

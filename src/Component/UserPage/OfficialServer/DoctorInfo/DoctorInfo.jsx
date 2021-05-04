@@ -10,6 +10,7 @@ import { POST } from '../../../../api/index.jsx'
 import memoryUtils from '../../../../utils/memoryUtils'
 import { connect } from 'react-redux'
 import { ChangeKeyAction } from '../../../../redux/action/PageKeyAction'
+import { ChangeDocInfoAction } from '../../../../redux/action/DocInfoAction'
 
 const { Paragraph } = Typography;
 
@@ -146,6 +147,8 @@ class DocInfo extends Component {
     componentWillUnmount() {
         console.log("willummount---------------")
         this.props.clearSelectedDocInfoInState()
+        this.props.ChangeKey(0)
+        this.props.changerDocInfo([])
     }
 
     render() {
@@ -289,6 +292,7 @@ class DocInfo extends Component {
 export default connect(
     state => ({ DocInfo: state.DocInfo }),
     {
-        ChangeKey: ChangeKeyAction
+        ChangeKey: ChangeKeyAction,
+        changerDocInfo: ChangeDocInfoAction
     }
 )(DocInfo);

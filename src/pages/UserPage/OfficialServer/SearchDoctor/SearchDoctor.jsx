@@ -12,9 +12,11 @@ class SearchDoctor extends Component {
 
     clearSelectedDocInfoInState = () => {
         this.setState({ SelectedDocInfo: [] })
+        this.props = {}
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps, prevState)
         if (nextProps.ShowKey !== prevState.ShowPage_Key) {
             return {
                 ShowPage_Key: nextProps.ShowKey,

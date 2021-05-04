@@ -26,7 +26,6 @@ class SearchSubject extends Component {
 
     clearSelectedDocInfoInState = () => {
         this.setState({ SelectedDocInfo: [] })
-        this.props = {}
     }
 
     render() {

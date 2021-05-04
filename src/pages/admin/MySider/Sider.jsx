@@ -66,10 +66,10 @@ class MySider extends Component {
                         </span>
                     }>
                         <Menu.Item key="3">
-                            <Link to='/admin/adminWork'>已挂号的病人</Link>
+                            <Link to='/admin/BookedPres'>已挂号的病人</Link>
                         </Menu.Item>
                         <Menu.Item key="4">
-                            <Link to='/admin/adminWork'>已就诊完成的病人</Link>
+                            <Link to='/admin/FinishedPres'>已就诊完成的病人</Link>
                         </Menu.Item>
                     </SubMenu>
 

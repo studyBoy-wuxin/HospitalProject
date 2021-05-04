@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, PageHeader, Descriptions, Statistic } from 'antd';
 import PubSub from 'pubsub-js'
-import OperateMed from './OperateMedicine/OperateMed.jsx'
+import OperateMed from '../../BookedPres/OperateMedicine/OperateMed.jsx'
 import { connect } from 'react-redux'
 
 //这样做的好处就是，当key改变即返回的时候，组件就销毁，state中的数据都重置
@@ -49,7 +49,7 @@ class PresMes extends Component {
     }
 
     render() {
-
+        const { type } = this.props
         const { name, sex, age, address } = this.state.PatientInfo
         const { PrescriptionInfo, TreatTime, TotalPrice } = this.state
         console.log(PrescriptionInfo)
@@ -66,7 +66,7 @@ class PresMes extends Component {
 
                 <Descriptions.Item label="预约时间">{PrescriptionInfo.bookedTime}</Descriptions.Item>
 
-                <Descriptions.Item label="就诊时间">{TreatTime}</Descriptions.Item>
+                <Descriptions.Item label="就诊时间">{type === 'AdminWorkPresList' ? TreatTime : PrescriptionInfo.treatmentTime}</Descriptions.Item>
 
             </Descriptions>
         )
@@ -115,7 +115,8 @@ class PresMes extends Component {
                     {/* 这里是展示患者信息头的组件 */}
                     <PageHeader
                         ghost={false}
-                        onBack={() => PubSub.publish('AdminWork_Key', 0)}
+                        //如果props中的type是Booked传来的，那就使用AdminWork_Key，否则就是Finished传来的，就用AdminFinishedWork_Key
+                        onBack={() => PubSub.publish(type === 'AdminWorkPresList' ? 'AdminWork_Key' : 'AdminFinishedWork_Key', 0)}
                         title="患者就诊单"
                         extra={[
                             <Button key="3">Operation</Button>,
@@ -131,7 +132,9 @@ class PresMes extends Component {
 
                 <div style={{ marginTop: '10px' }}>
                     {/* 这里引入操作药品的组件 */}
-                    <OperateMed TreatTime={TreatTime} />
+                    {
+                        type === 'AdminWorkPresList' ? <OperateMed TreatTime={TreatTime} /> : 'aaa'
+                    }
                 </div>
             </div>
         );

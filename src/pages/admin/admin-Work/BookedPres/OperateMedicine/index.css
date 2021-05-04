@@ -1,0 +1,4 @@
+ /* 获取到穿梭框右边元素，让搜索框不显示 */
+ .ant-transfer-list:nth-child(3) .ant-transfer-list-body-search-wrapper{
+    display: none;
+}

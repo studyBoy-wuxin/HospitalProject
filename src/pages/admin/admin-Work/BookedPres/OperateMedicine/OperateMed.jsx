@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Transfer, Switch, Table, Tag, InputNumber, Select, Button, Modal, Form, message, Input } from 'antd';
 import difference from 'lodash/difference';
-import { GET, POST } from '../../../../../../api/index.jsx'
+import { GET, POST } from '../../../../../api/index.jsx'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
+import './index.css'
 
 const { Option } = Select
 
@@ -382,12 +383,9 @@ class MedSearchHeader extends Component {
                         defaultValue='---全部---'
                     >
                         <Option value='全部'>---全部---</Option>
-                        {
-
-                            this.state.AllType.map((item, index) => {
-                                return <Option key={item + index} value={item}>{item}</Option>
-                            })
-                        }
+                        {this.state.AllType.map((item, index) => {
+                            return <Option key={item + index} value={item}>{item}</Option>
+                        })}
                     </Select>
                 </div>
                 <Form onSubmit={this.handleSubmit}>
@@ -399,9 +397,12 @@ class MedSearchHeader extends Component {
                         onChange={this.onChange}
                         //接收 inputValue option 两个参数，当 option 符合筛选条件时，应返回 true，反之则返回 false
                         //用于搜索
-                        filterOption={(inputValue, option) =>
-                            option.medName.indexOf(inputValue) !== -1 || option.type.indexOf(inputValue) !== -1
-                            // console.log(inputValue, option)
+                        filterOption={(inputValue, option) => {
+
+                            const a = option.medName.indexOf(inputValue) !== -1 || option.type.indexOf(inputValue) !== -1
+                            console.log(inputValue, option, option.medName.indexOf(inputValue), a)
+                            return a
+                        }
                         }
                         leftColumns={leftTableColumns}
                         rightColumns={rightTableColumns}
