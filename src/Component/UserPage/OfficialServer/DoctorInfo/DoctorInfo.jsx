@@ -5,6 +5,7 @@ import {
     StarFilled
 } from '@ant-design/icons'
 import './index.css'
+import { withRouter } from 'react-router-dom'
 import { POST } from '../../../../api/index.jsx'
 // import PubSub from 'pubsub-js'
 import memoryUtils from '../../../../utils/memoryUtils'
@@ -26,11 +27,12 @@ class DocInfo extends Component {
     }
 
     //点击预约
-    onBook = (index, ID) => {
+    onBook = (index, DocInfoID) => {
         return () => {
             const { Patient, workInfo } = this.state
             console.log(workInfo[index].Time)
-            const data = { ID, PatID: Patient.patID, BookedTime: workInfo[index].Time }
+            const data = { DocInfoID, PatID: Patient.patID, BookedTime: workInfo[index].Time }
+            console.log(data);
             POST('/DocInfoController/updateTreatMes', data)
                 .then(resp => {
                     if (resp.data === '预约成功') {
@@ -38,6 +40,10 @@ class DocInfo extends Component {
                         this.setState({ Visible: false })
                         //在预约成功后，重新调用componentDidMount方法，更新数据
                         this.componentDidMount()
+                    } else if (resp.data === 'UnPass') {
+                        message.error('您有尚未支付完成的订单，请先支付完成后再挂号!')
+                        console.log(this.props);
+                        this.props.history.push('/userPage/OfficialServer/PayForCost')
                     } else {
                         message.error("预约失败")
                     }
@@ -47,7 +53,7 @@ class DocInfo extends Component {
     }
 
     //确认预约信息
-    ConfirmInfo = (id, index) => {
+    ConfirmInfo = (DocInfoID, index) => {
         return () => {
             const { workInfo, Patient } = this.state
             const {
@@ -90,7 +96,7 @@ class DocInfo extends Component {
                     key: '7',
                     FirstCol: '预约',
                     SecondCol: (
-                        <Button type="primary" htmlType="submit" onClick={this.onBook(index, id)}>
+                        <Button type="primary" htmlType="submit" onClick={this.onBook(index, DocInfoID)}>
                             确认预约
                         </Button>
                     )
@@ -116,23 +122,23 @@ class DocInfo extends Component {
         this.setState({ SelectedDocInfo: this.state.SelectedDocInfo }, () => {
 
             const { docID } = this.state.SelectedDocInfo
-            const data = { docId: docID }
             //定义一个数组，把POST请求获取来的医生工作信息按规律放入
             const mes = []
-            POST('/DocInfoController/findAllInfoByDocID', data)
+            POST('/DocInfoController/findAllInfoByDocID', { docId: docID })
                 .then(resp => {
+                    console.log(resp.data);
                     resp.data.forEach((value, index) => {
                         value.treatBegin = value.treatBegin.substring(0, 5)
                         value.treatEnd = value.treatEnd.substring(0, 5)
                         mes.push({
-                            key: value.id + index,
+                            key: value.docInfoID + index,
                             Date: value.treatDate,
                             Time: value.treatBegin + '-' + value.treatEnd,
                             Price: '￥' + value.price,
                             TreatNum: value.treatNum,
                             book: value.treatNum === 0 ?
                                 '已满诊' :
-                                <Button type='primary' onClick={this.ConfirmInfo(value.id, index)}>预约</Button>
+                                <Button type='primary' onClick={this.ConfirmInfo(value.docInfoID, index)}>预约</Button>
                         })
                     })
                     this.setState({
@@ -152,7 +158,6 @@ class DocInfo extends Component {
     }
 
     render() {
-        console.log("------------------------------------DocInfo-------------------")
 
         const {
             branchSubject,
@@ -295,4 +300,4 @@ export default connect(
         ChangeKey: ChangeKeyAction,
         changerDocInfo: ChangeDocInfoAction
     }
-)(DocInfo);
+)(withRouter(DocInfo));

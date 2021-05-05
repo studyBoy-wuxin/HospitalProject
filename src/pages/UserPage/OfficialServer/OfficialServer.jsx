@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import { Route, Link } from "react-router-dom"
 import SearchDoctor from './SearchDoctor/SearchDoctor.jsx'
 import SearchSubject from './SearchSubject/SearchSubject.jsx'
-
+import PayForCost from './PayForCost/PayForCost.jsx'
 
 
 const { SubMenu } = Menu;
@@ -33,14 +33,16 @@ class OfficialServer extends Component {
                                                 <Link to='/userPage/OfficialServer/SearchSubject'>搜专科挂号</Link>
                                             </Menu.Item>
                                         </SubMenu>
-                                        <Menu.Item key="2">门诊缴费</Menu.Item>
-
+                                        <Menu.Item key="2">
+                                            <Link to='/userPage/OfficialServer/PayForCost'>门诊缴费</Link>
+                                        </Menu.Item>
                                     </Menu>
                                 </Sider>
                                 <Content style={{ background: '#fff', height: '600px' }}>
                                     <div>
                                         <Route path='/userPage/OfficialServer/SearchDoctor' component={SearchDoctor} />
                                         <Route path='/userPage/OfficialServer/SearchSubject' component={SearchSubject} />
+                                        <Route path='/userPage/OfficialServer/PayForCost' component={PayForCost} />
                                     </div>
                                 </Content>
                             </Layout>

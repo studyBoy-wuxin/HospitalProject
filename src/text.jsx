@@ -1,71 +1,95 @@
 import React, { Component } from 'react';
-import { Table } from 'antd'
+import { Table, Tooltip, Icon } from 'antd';
 import { POST } from './api/index.jsx'
 
 const columns = [
-    { title: '药品名称', dataIndex: 'name', key: 'name' },
-    { title: '药品数量', dataIndex: 'Num', key: 'Num' },
-    { title: '价格', dataIndex: 'Price', key: 'Price' },
+    {
+        title: '收费名称',
+        dataIndex: 'Name',
+        key: 'Name',
+        align: 'center'
+    },
+    {
+        title: '数量',
+        dataIndex: 'Num',
+        key: 'Num',
+        align: 'center'
+    },
+    {
+        title: '收费金额',
+        dataIndex: 'Price',
+        key: 'Price',
+        width: '20%',
+        align: 'right'
+    },
 ];
 
-class ShowMedInfo extends Component {
+class PayForCost extends Component {
 
     state = {
-        medInPresList: [],          //这是患者的药物信息列表
-        medInfoList: [],             //这是药物信息列表
-        dataSource: [],
-        TotalPrice: 0
+        data: []
     }
 
     componentDidMount() {
-        POST("/MedicineController/findMedInfoByPresID", { PresID: 6 })
+        POST('/PatientController/findCostById', { type: 'patient', PatID: 10001 })
             .then(resp => {
-                // console.log(resp.data)
-                this.setState({ medInPresList: resp.data.medInPresList, medInfoList: resp.data.medInfoList }, () => {
-                    const { medInPresList, medInfoList } = this.state
-                    const dataSource = []
-                    const Source = []
-                    for (let i = 0; i < medInPresList.length; i++) {
-                        Source.push({ medInPresInfo: medInPresList[i], medInfo: medInfoList[i] })
-                    }
-                    let TotalPrice = 0
-                    Source.forEach((item, index) => {
-                        TotalPrice += item.medInPresInfo.medNum * item.medInfo.price * 1
-                        dataSource.push({
-                            key: item.medInPresInfo.id,
-                            name: item.medInfo.medName,
-                            Num: item.medInPresInfo.medNum,
-                            Price: item.medInPresInfo.medNum * item.medInfo.price,
-                            description: item.medInfo.description,
-                        })
-                        if (index === Source.length - 1) {
-                            this.setState({ TotalPrice })
+                console.log(resp.data)
+                const { docWorkInfo, presInfo, medInfoList, medInPresList, docInfo } = resp.data
+                const data = []
+                data.push({
+                    key: 1,
+                    Name: (
+                        <span>
+                            <span style={{ marginRight: '10px' }}>挂号费用</span>
+                            <Tooltip
+                                title={`于${presInfo.treatmentTime},就诊于${docInfo.branchSubject}科${docInfo.name}医生，挂号费为${docWorkInfo.price}元`}
+                            >
+                                <Icon type="question-circle-o" />
+                            </Tooltip>
+                        </span>
+                    ),
+                    Num: 1,
+                    Price: '￥' + docWorkInfo.price,
+                })
+                data.push({
+                    key: 2,
+                    Name: '药物费用',
+                    Num: 1,
+                    Price: '￥' + presInfo.totalPrice,
+                    children: medInfoList.map((item, index) => {
+                        return {
+                            key: item.medID,
+                            Name: item.medName,
+                            Num: medInPresList[index].medNum,
+                            Price: medInPresList[index].medNum * item.price,
                         }
                     })
-
-                    this.setState({ dataSource })
                 })
+                data.push({
+                    key: 3,
+                    Name: '',
+                    Num: '',
+                    Price: `总价：￥ ${resp.data.presInfo.totalPrice + resp.data.docWorkInfo.price}`,
+                })
+                this.setState({ data })
+
             })
             .catch(err => console.log(err.message))
     }
 
     render() {
-        const { dataSource, TotalPrice } = this.state
-        console.log("dataSource:  ", dataSource)
-        console.log(TotalPrice);
+        const { data } = this.state
         return (
             <div>
                 <Table
                     columns={columns}
-                    expandedRowRender={record => <p style={{ margin: 0 }}>{record.description}</p>}
-                    dataSource={this.state.dataSource}
-                    footer={() => (
-                        <span style={{ position: 'relative', left: '75%' }}>{`总价：${TotalPrice}`}</span>
-                    )}
-                />
+                    dataSource={data}
+                    bordered
+                    pagination={false}
+                />,
             </div>
         );
     }
 }
 
-export default ShowMedInfo;
+export default PayForCost;
