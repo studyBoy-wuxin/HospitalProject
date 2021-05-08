@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Layout, BackTop, Icon, Avatar } from 'antd';
-import ownerMes from './admin-ownerMes/ownerMes.jsx'
-import adminBookedWork from './admin-Work/BookedPres/adminBookedWork.jsx'
-import adminFinishedWork from './admin-Work/FinishedPres/adminFinishedWork.jsx'
+import ownerMes from './DocOwnerMes/ownerMes.jsx'
+import adminBookedWork from './DocWork/BookedPres/adminBookedWork.jsx'
+import adminFinishedWork from './DocWork/FinishedPres/adminFinishedWork.jsx'
+import DocApply from './DocApply/DocApply.jsx'
+import CheckDocApply from './CheckDocApply/CheckDocApply.jsx'
 import MySider from './MySider/Sider';
 import { Route, Redirect } from 'react-router-dom'
 import memoryUtils from '../../utils/memoryUtils'
@@ -23,7 +25,7 @@ class admin extends Component {
         const { Doctor } = this.state
 
         return (
-            <Layout>
+            <Layout style={{ height: '100%' }}>
                 {/* 将左侧导航区Sider组件引入 */}
                 <MySider />
                 {/* 将右侧内容区MyLayout引入 */}
@@ -43,6 +45,8 @@ class admin extends Component {
                     <Route path='/admin/OwnerMes' component={ownerMes} />
                     <Route path='/admin/BookedPres' component={adminBookedWork} />
                     <Route path='/admin/FinishedPres' component={adminFinishedWork} />
+                    <Route path='/admin/DocApply' component={DocApply} />
+                    <Route path='/admin/CheckDocApply' component={CheckDocApply} />
 
                     <Footer className="Footer">
                         <div>

@@ -263,7 +263,7 @@ class MyLayout extends Component {
         ]
 
         return (
-            <Content>
+            <Content style={{ height: '120%' }}>
                 <div className="ownerMes-Content" >
                     <div className='ownerMes-Content-box'>
                         <div>

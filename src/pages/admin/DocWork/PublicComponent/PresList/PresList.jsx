@@ -70,7 +70,7 @@ class PresList extends Component {
         return (
             <div>
                 <div>
-                    <span style={{ fontWeight: '700' }}>已挂号的病患</span>
+                    <span style={{ fontWeight: '700' }}>{type === 'AdminWorkPresList' ? '已挂号的病患' : '已就诊的病患'}</span>
                 </div>
                 <Divider />
                 <List

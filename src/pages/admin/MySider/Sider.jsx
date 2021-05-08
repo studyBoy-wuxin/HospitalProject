@@ -54,11 +54,6 @@ class MySider extends Component {
                     defaultSelectedKeys={['1']}             //默认选中的树节点，靠Menu.Item的key值辨认
                     mode="inline"                         //菜单的类型为内嵌(下拉展示)
                 >
-                    <Menu.Item key="1">
-                        <Icon type="edit" />
-                        <span>Option 1</span>
-                    </Menu.Item>
-
                     <SubMenu key="sub1" title={                 //title可以设置SubMenu的图标
                         <span>
                             <Icon type="desktop" />
@@ -86,15 +81,19 @@ class MySider extends Component {
                         <Menu.Item key="6">修改密码</Menu.Item>
                     </SubMenu>
 
-                    <SubMenu key="sub3" title={
-                        <span>
-                            <Icon type="user" />
-                            <span>Work</span>
-                        </span>
-                    }>
-                        <Menu.Item key="7">Team 1</Menu.Item>
-                        <Menu.Item key="8">Team 2</Menu.Item>
-                    </SubMenu>
+                    <Menu.Item key="7">
+                        <Link to='/admin/DocApply'>
+                            <Icon type="form" />
+                            <span>申请医疗资源</span>
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item key="8">
+                        <Link to='/admin/CheckDocApply'>
+                            <Icon type="search" />
+                            <span>查看个人申请</span>
+                        </Link>
+                    </Menu.Item>
 
                     <Menu.Item key="9" onClick={this.removeUser}>
                         <Icon type="logout" />

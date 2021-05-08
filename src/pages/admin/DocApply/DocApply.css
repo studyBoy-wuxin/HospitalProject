@@ -1,13 +1,15 @@
- /* 内容区 */
- .adminWork-Content {
+.DocApply-Content{
     margin: 16px 24px 0px 24px;
     background: #fff;
     padding: 24px;
-    height: 900px;
+    height: 100%;
     display: flex;
     justify-content:center;
-  }
-  .adminWork-Content .adminWork-Content-box{
+}
+.DocApply-Content-box{
     width: 1100px;
     height: 600px;
-  }
+}
+.DocApply-Content-Form .ant-form-item{
+    margin-bottom: 0;
+}

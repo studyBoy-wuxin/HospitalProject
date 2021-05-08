@@ -32,7 +32,7 @@ class adminWork extends Component {
             },
         ]
         return (
-            <Content>
+            <Content style={{ height: '100%' }}>
                 <div className='adminWork-Content'>
                     <div className='adminWork-Content-box'>
                         {Contents[key].MyComponent}

@@ -1,11 +1,10 @@
 
   /* 内容区 */
   .ownerMes-Content {
-    margin-left: 10px;
-     margin-top: 16px;
+    margin: 16px 24px 0px 24px;
     background: #fff;
     padding: 24px;
-    height: 700px;
+    height: 100%;
     display: flex;
     justify-content:center;
   }

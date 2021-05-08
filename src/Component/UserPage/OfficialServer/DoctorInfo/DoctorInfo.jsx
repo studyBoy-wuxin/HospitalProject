@@ -1,4 +1,4 @@
-import { PageHeader, Tag, Typography, Row, Table, Button, Modal, Form, message } from 'antd';
+import { PageHeader, Tag, Typography, Row, Table, Button, Modal, message } from 'antd';
 import React, { Component } from 'react';
 import {
     StarOutlined,
@@ -278,15 +278,13 @@ class DocInfo extends Component {
                     bodyStyle={{ width: '600px' }}
                     width={600}
                 >
-                    <Form onSubmit={this.handleSubmit} className='OwnerMessage-Form'>
-                        <Table
-                            dataSource={this.state.FormDataSource}
-                            columns={columns}
-                            showHeader={false}
-                            pagination={false}
-                            bordered
-                        />
-                    </Form>
+                    <Table
+                        dataSource={this.state.FormDataSource}
+                        columns={columns}
+                        showHeader={false}
+                        pagination={false}
+                        bordered
+                    />
                 </Modal>
 
             </div>
