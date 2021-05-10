@@ -17,7 +17,7 @@ class DocApply extends Component {
         searchText: '',                       //搜索框中的文本
         searchedColumn: '',                 //被选中的列名
         Visible: false,
-        SelectedEquInfo: [],
+        SelectedEquInfo: [],                //点击申请之后，存放的设备信息，用于展示
         ApplyBeginTime: '',                 //申请起始时间
         AfterValue: '天',
     }
@@ -120,7 +120,7 @@ class DocApply extends Component {
         }
     }
 
-    //用于表单获取以及表单提交
+    //用于表单数据获取以及表单提交
     handleSubmit = e => {
         e.preventDefault()
 
@@ -132,12 +132,14 @@ class DocApply extends Component {
                     DocID: DocInfo.empID,
                     EqID: SelectedEquInfo.eqID,
                     lendDate: ApplyBeginTime,
-                    LendTimes: `${values.lendTime}${AfterValue}`
+                    LendTimes: `${values.lendTime}${AfterValue}`,
+                    LendReason: values.LendReason
                 }
                 console.log(data);
                 POST('/MedEquApplyController/insertApplyment', data)
                     .then(resp => {
-                        message.success(resp.data);
+                        message.success(resp.data)
+                        this.setState({ Visible: false })
                     })
                     .catch(err => message.error(err.message))
             }
@@ -287,6 +289,25 @@ class DocApply extends Component {
                                     </Select>)}
                             />
                         )}
+                    </Form.Item>
+                )
+            },
+            {
+                key: 'LendReason',
+                FirstCol: '申请理由',
+                SecondCol: (
+                    <Form.Item >
+                        {getFieldDecorator('LendReason', {
+                            rules: [
+                                { required: true, message: '请填写申请理由!' }
+                            ],
+                            validateTrigger: 'onBlur'
+                        })(<Input.TextArea
+                            autoSize={true}
+                            placeholder='请输入申请理由'
+                            allowClear={true}
+                            style={{ marginBottom: '10px' }}
+                        />)}
                     </Form.Item>
                 )
             },

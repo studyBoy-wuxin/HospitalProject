@@ -1,0 +1,17 @@
+.InspectApply-Content{
+    margin: 16px 24px 0px 24px;
+    background: #fff;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    justify-content:center;
+}
+.InspectApply-Content-box{
+    width: 1100px;
+    height: 600px;
+}
+.InspectApply-Form .ant-form-item{
+    margin-bottom: 0;
+    position: relative;
+    top: 5px;
+}

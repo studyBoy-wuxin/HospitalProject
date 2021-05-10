@@ -5,6 +5,7 @@ import adminBookedWork from './DocWork/BookedPres/adminBookedWork.jsx'
 import adminFinishedWork from './DocWork/FinishedPres/adminFinishedWork.jsx'
 import DocApply from './DocApply/DocApply.jsx'
 import CheckDocApply from './CheckDocApply/CheckDocApply.jsx'
+import InspectApply from './InspectApply/InspectApply.jsx'
 import MySider from './MySider/Sider';
 import { Route, Redirect } from 'react-router-dom'
 import memoryUtils from '../../utils/memoryUtils'
@@ -47,6 +48,7 @@ class admin extends Component {
                     <Route path='/admin/FinishedPres' component={adminFinishedWork} />
                     <Route path='/admin/DocApply' component={DocApply} />
                     <Route path='/admin/CheckDocApply' component={CheckDocApply} />
+                    <Route path='/admin/InspectApply' component={InspectApply} />
 
                     <Footer className="Footer">
                         <div>

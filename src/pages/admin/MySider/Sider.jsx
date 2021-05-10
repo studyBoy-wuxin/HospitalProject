@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import SnowIcon from "../../../assets/Img/snowflake.png"
-import { Icon, Menu, Layout, Modal } from 'antd';
+import { Icon, Menu, Layout, Modal, message } from 'antd';
 import "./Sider.css"
 import memoryUtils from '../../../utils/memoryUtils'
 import storageUtils from '../../../utils/storageUtils'
 import { withRouter, Link } from 'react-router-dom'
+import { POST } from '../../../api/index.jsx'
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -13,6 +14,7 @@ class MySider extends Component {
     state = {
         collapsed: false,           //判断是否展开状态
         logo_font_size: "18px",     //控制展开收缩时的字体大小
+        DocInfo: memoryUtils.User,
     };
 
     onCollapse = (collapsed) => {
@@ -37,8 +39,18 @@ class MySider extends Component {
         });
     }
 
+    componentDidMount() {
+        const { DocInfo } = this.state
+        POST('/DoctorController/findDocterById', { DocID: DocInfo.empID, type: 'doctor' })
+            .then(resp => {
+                const { data } = resp
+                this.setState({ DocInfo: { ...data, ...DocInfo } })
+            })
+            .catch(err => message.error(err.message))
+    }
+
     render() {
-        const { collapsed, logo_font_size } = this.state;       //解构赋值
+        const { collapsed, logo_font_size, DocInfo } = this.state;       //解构赋值
         return (
             <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse} theme="light">
                 <div className="Sider-logo">
@@ -81,19 +93,38 @@ class MySider extends Component {
                         <Menu.Item key="6">修改密码</Menu.Item>
                     </SubMenu>
 
-                    <Menu.Item key="7">
-                        <Link to='/admin/DocApply'>
+                    <SubMenu key="sub3" title={                 //title可以设置SubMenu的图标
+                        <span>
                             <Icon type="form" />
-                            <span>申请医疗资源</span>
-                        </Link>
-                    </Menu.Item>
+                            <span>资源申请</span>
+                        </span>
+                    }>
+                        {//如果是科长或者是部长，那么就有审核申请的选项
+                            DocInfo.position === '科长' || DocInfo.position === '部长' ?
+                                <Menu.Item key="InspectApply">
+                                    <Link to='/admin/InspectApply'>
+                                        <Icon type="form" />
+                                        <span>审核申请</span>
+                                    </Link>
+                                </Menu.Item>
+                                : ''
+                        }
+                        <Menu.Item key="7">
+                            <Link to='/admin/DocApply'>
+                                <Icon type="form" />
+                                <span>申请医疗资源</span>
+                            </Link>
+                        </Menu.Item>
 
-                    <Menu.Item key="8">
-                        <Link to='/admin/CheckDocApply'>
-                            <Icon type="search" />
-                            <span>查看个人申请</span>
-                        </Link>
-                    </Menu.Item>
+                        <Menu.Item key="8">
+                            <Link to='/admin/CheckDocApply'>
+                                <Icon type="search" />
+                                <span>查看个人申请</span>
+                            </Link>
+                        </Menu.Item>
+                    </SubMenu>
+
+
 
                     <Menu.Item key="9" onClick={this.removeUser}>
                         <Icon type="logout" />
