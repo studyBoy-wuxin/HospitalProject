@@ -11,7 +11,7 @@ import storageUtils from '../../utils/storageUtils'
 class login extends Component {
 
     state = {
-        type: 'doctor'
+        type: 'Logistic'
     }
 
     handleSubmit = e => {            //提交时的回调
@@ -67,9 +67,23 @@ class login extends Component {
                             }
                         })
                         .catch(err => message.error(err.message))
-                } else if (values.type === 'manager') {
+                } else if (values.type === 'Logistic') {
+                    values = JSON.parse(JSON.stringify(values).replace(/ID/g, 'EmpID'))     //把原来values中的ID字段名转换成EmpID
                     //管理员登录
-                    console.log('管理员登录')
+                    POST('/EmployeeController/Login', values)
+                        .then(resp => {
+                            if (resp.data.arg1 === '登陆成功') {
+                                console.log(resp.data)
+                                message.success(resp.data.arg1);      //登陆成功就弹出成功提示       
+                                memoryUtils.User = resp.data.Employee
+                                storageUtils.saveUser(resp.data.Employee)
+                                console.log(memoryUtils)
+                                this.props.history.replace('/LogisticsPage')
+                            } else {
+                                message.error(resp.data.arg1)
+                            }
+                        })
+                        .catch(err => message.error(err.message))
                 }
             } else {
                 console.log(err)
@@ -115,7 +129,7 @@ class login extends Component {
                                         rules: [
                                             { required: true, message: '请输入ID！' },
                                         ],
-                                        initialValue: '20001',
+                                        initialValue: '20005',
                                         validateTrigger: 'onBlur'               //校检时机：为输入框失去焦点时触发
                                     })(
                                         <Input
@@ -135,7 +149,7 @@ class login extends Component {
                                             { required: true, message: '请输入密码!' },
                                             { pattern: /^[a-zA-Z0-9_.]{6,12}$/, message: '请输入6到12位密码' },
                                         ],
-                                        initialValue: '123456',
+                                        initialValue: '115128',
                                         validateTrigger: 'onBlur'               //校检时机：为输入框失去焦点时触发
                                     })(
                                         <Input.Password
@@ -154,7 +168,7 @@ class login extends Component {
                                 })(<Radio.Group onChange={e => { this.setState({ type: e.target.value }) }}>
                                     <Radio value='patient'>游客</Radio>
                                     <Radio value='doctor'>医生</Radio>
-                                    <Radio value='manager'>管理员</Radio>
+                                    <Radio value='Logistic'>后勤部</Radio>
                                 </Radio.Group>)}
                             </Form.Item>
 

@@ -1,0 +1,13 @@
+  /* 左侧导航栏 */
+  .Sider-logo{
+    margin :20px 0;
+    height:32px;
+    color: black;
+    /* font-size: 18px; */
+    display: flex;
+    align-items: center;
+    justify-content:center
+  }
+  .Sider-logo img{
+    height: 100%;
+  }

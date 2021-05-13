@@ -1,0 +1,61 @@
+.site-layout{
+    background-color: #f0f2f5;
+}
+
+/* 头部 */
+.LogisticsPage-Header{
+    background-color: white;
+    margin-left: 10px;
+    padding: 0;
+    display: flex;
+    justify-content:flex-end;
+}
+.LogisticsPage-Header .LogisticsPage-Header-div{
+    position: relative;
+    left:30px;
+}
+.LogisticsPage-Header .LogisticsPage-logo {
+    width: 200px;
+    height: 31px;
+    background: white;
+    color: black;
+    font-size: large;
+    margin: 16px 0 16px 0;
+    float: left;
+    display: flex;
+    align-items: center;
+  }
+.LogisticsPage-Header .LogisticsPage-avatar-box{
+    width: 50px;
+    height: 50px;
+}
+.LogisticsPage-avatar-box .avatar{
+    position: relative;
+    top: -2px;
+    margin-right: 10px;
+}
+
+/* 底部 */
+.Footer .backTop{      /* 回到顶部 */
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background-color: #1088e9;
+    color: #fff;
+    text-align: center;
+    font-size: 30px;
+  }
+  .ant-layout-footer{
+      padding: 8px;
+  }
+
+  .LogisticsPage-Content{
+    margin: 16px 24px 0px 24px;
+    background: #fff;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    justify-content:center;
+    width: 97%;
+  }

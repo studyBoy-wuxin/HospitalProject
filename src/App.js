@@ -6,7 +6,7 @@ import Register from './pages/register/register'
 import text from './text'
 import error from './assets/error/error.jsx'
 import userPage from './pages/UserPage/userPage.jsx'
-
+import LogisticsPage from './pages/LogisticsPage/LogisticsPage'
 
 class App extends Component {
 
@@ -20,6 +20,7 @@ class App extends Component {
           <Route path='/register' component={Register} />
           <Route path='/text' component={text} />
           <Route path='/error' component={error} />
+          <Route path='/LogisticsPage' component={LogisticsPage} />
           <Route path='/userPage' component={userPage} />
         </Switch>
         {/* <Redirect to="/admin" /> */}

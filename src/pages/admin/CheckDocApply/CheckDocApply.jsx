@@ -174,11 +174,11 @@ class CheckDocApply extends Component {
                     const EquListByDocID = []
                     resp.data.EquApplist.forEach((value, index) => {
                         EquListByDocID.push({
-                            key: value.id,
-                            ID: value.id,
+                            key: value.applyID,
+                            ID: value.applyID,
                             EqName: resp.data.EquInfoList[index].eqName,
                             lendDate: value.lendDate,
-                            status: value.status === null ? '申请中' : value.status === 0 ? '使用中' : '已归还',
+                            status: value.status === null ? '申请中' : value.status === 0 ? '使用中' : value.status === 1 ? '已归还' : value.status === 2 ? '已归还,设备损坏' : value.status === -1 ? '设备丢失' : '',
                             applyID: { ...value, EqName: resp.data.EquInfoList[index].eqName }
                         })
                     })
@@ -225,7 +225,6 @@ class CheckDocApply extends Component {
                 render: value => (
                     <div>
                         <Button type='link' onClick={this.checkSelectedApp(value)}>查看</Button>
-                        {/* {value.status === 0 ? <Button type='link' onClick={}>归还</Button> : ''} */}
                     </div>
                 )
             }

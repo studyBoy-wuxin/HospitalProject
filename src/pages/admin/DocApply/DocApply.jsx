@@ -139,6 +139,7 @@ class DocApply extends Component {
                 POST('/MedEquApplyController/insertApplyment', data)
                     .then(resp => {
                         message.success(resp.data)
+                        this.props.form.resetFields()           //重置Form所有组件的状态
                         this.setState({ Visible: false })
                     })
                     .catch(err => message.error(err.message))
