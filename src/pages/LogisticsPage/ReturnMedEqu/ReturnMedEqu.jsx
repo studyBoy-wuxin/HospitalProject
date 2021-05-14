@@ -255,7 +255,7 @@ class ReturnMedEqu extends Component {
                 title: '申请时间',
                 dataIndex: 'lendDate',
                 key: 'lendDate',
-                ...this.getColumnSearchProps('type'),
+                ...this.getColumnSearchProps('lendDate'),
             },
             {
                 title: '申请时长',

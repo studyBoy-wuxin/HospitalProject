@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, message, Table, Button, Input, Icon, Modal, Form } from 'antd';
+import { Layout, message, Table, Button, Input, Icon, Modal, Form, Radio } from 'antd';
 import { GET, POST } from '../../../api/index'
 import memoryUtils from '../../../utils/memoryUtils'
 import Highlighter from 'react-highlight-words';
@@ -15,7 +15,8 @@ class InspectApply extends Component {
         searchedColumn: '',                 //被选中的列名
         ApplymentInfo: [],                  //所有申请信息
         Visible: false,
-        UpdateInfo: {}
+        UpdateInfo: {},
+        isApprove: '批准'
     }
 
     //dataIndex也就是每一个列名
@@ -99,49 +100,49 @@ class InspectApply extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {          //这里的values采用的是{medID:num}这样的对象形式，标识有多少这个药品
             if (!err) {
-                const { UpdateInfo, ApplymentInfo } = this.state
-                //将原来需要更新的数据，与经办人留言结合在一起
-                const data = { ...UpdateInfo, ManagerInfo: values.ManagerInfo }
-                console.log(data);
-                console.log(ApplymentInfo);
-                POST('/MedEquApplyController/UpdateApplyment', data)
-                    .then(resp => {
-                        if (resp.data === 1) {
-                            message.success('操作成功')
-                            this.props.form.resetFields()           //重置Form所有组件的状态
-                            const newApplymentInfo = []
-                            ApplymentInfo.forEach(value => {
-                                if (value.key !== data.ApplyID) {
-                                    newApplymentInfo.push(value)
-                                }
-                            })
-                            this.setState({ ApplymentInfo: newApplymentInfo, UpdateInfo: {} })
-                        } else {
-                            message.error('操作失败')
-                        }
-                        this.setState({ Visible: false })
-                    })
-                    .catch(err => message.error(err.message))
+                const { UpdateInfo, ApplymentInfo, isApprove } = this.state
+                //申请状态
+                let status = -3
+                if (isApprove === '批准') {
+                    //如果是批准，那么就将状态改为0，即为正在使用中
+                    status = 0
+                } else if (isApprove === '不批准') {
+                    //如果是不批准，那么就将状态改为2，并传入原因
+                    status = -2
+                }
+                if (status !== -3) {
+                    //将原来需要更新的数据，与经办人留言结合在一起
+                    const data = { ...UpdateInfo, ManagerInfo: values.ManagerInfo, status }
+                    console.log(data);
+                    console.log(ApplymentInfo);
+                    POST('/MedEquApplyController/UpdateApplyment', data)
+                        .then(resp => {
+                            if (resp.data === 1) {
+                                message.success('操作成功')
+                                this.props.form.resetFields()           //重置Form所有组件的状态
+                                const newApplymentInfo = []
+                                ApplymentInfo.forEach(value => {
+                                    if (value.key !== data.ApplyID) {
+                                        newApplymentInfo.push(value)
+                                    }
+                                })
+                                this.setState({ ApplymentInfo: newApplymentInfo, UpdateInfo: {} })
+                            } else {
+                                message.error('操作失败')
+                            }
+                            this.setState({ Visible: false })
+                        })
+                        .catch(err => message.error(err.message))
+                }
             }
         })
-
-
     }
 
     //对申请的操作方法
-    OperateApply = (Type, OperateInfo) => {
+    OperateApply = (OperateInfo) => {
         return () => {
             const { DocInfo } = this.state
-            //申请状态
-            let status = -3
-            if (Type === 'Ratify') {
-                //如果是批准，那么就将状态改为0，即为正在使用中
-                status = 0
-            } else if (Type === 'UnRatify') {
-                //如果是不批准，那么就将状态改为2，并传入原因
-                status = -2
-            }
-            const UpdateInfo = { managerID: DocInfo.empID, status, ApplyID: OperateInfo.ID }
+            const UpdateInfo = { managerID: DocInfo.empID, ApplyID: OperateInfo.ID }
             this.setState({ UpdateInfo, Visible: true })
         }
     }
@@ -186,7 +187,7 @@ class InspectApply extends Component {
             .catch(err => message.error(err.message))
     }
     render() {
-        const { ApplymentInfo, Visible } = this.state
+        const { ApplymentInfo, Visible, isApprove } = this.state
         const { getFieldDecorator } = this.props.form;
         const ApplymentColumns = [
             {
@@ -233,7 +234,7 @@ class InspectApply extends Component {
                 title: '申请时间',
                 dataIndex: 'lendDate',
                 key: 'lendDate',
-                ...this.getColumnSearchProps('type'),
+                ...this.getColumnSearchProps('lendDate'),
             },
             {
                 title: '申请时长',
@@ -248,23 +249,10 @@ class InspectApply extends Component {
                 key: 'OperateInfo',
                 render: OperateInfo => (
                     <div>
-                        <Button type='link' onClick={this.OperateApply('Ratify', OperateInfo)}>批准</Button>
-                        <Button type='link' onClick={this.OperateApply('UnRatify', OperateInfo)}>不批准</Button>
+                        <Button type='link' onClick={this.OperateApply(OperateInfo)}>审核</Button>
                     </div>
                 )
-            },
-            // {
-            //     title: '是否归还',
-            //     dataIndex: 'ReturnInfo',
-            //     key: 'ReturnInfo',
-            //     render: value => (
-            //         <div>
-            //             {/* 对于正在使用，尚未归还的申请，那么就出现归还 */}
-            //             {value.status === 0 ? <Button type='link' onClick={this.ReturnEqu(value)}>归还</Button> : value.status === null ? '待批准' : '已归还'}
-            //         </div>
-            //     ),
-            //     ...this.getColumnSearchProps('ReturnInfo'),
-            // }
+            }
         ];
 
         //展示申请确认表的列
@@ -282,14 +270,26 @@ class InspectApply extends Component {
         ]
         const FormDataSource = [
             {
-                key: '1',
+                key: '是否批准',
+                FirstCol: '是否批准',
+                SecondCol: (<Form.Item >
+                    {getFieldDecorator('isApprove', {
+                        initialValue: isApprove,
+                    })(<Radio.Group onChange={e => this.setState({ isApprove: e.target.value })}>
+                        <Radio value="批准">批准</Radio>
+                        <Radio value="不批准">不批准</Radio>
+                    </Radio.Group>)}
+                </Form.Item>)
+            },
+            {
+                key: '留言',
                 FirstCol: '留言',
                 SecondCol: (<Form.Item >
                     {getFieldDecorator('ManagerInfo', {
                         rules: [
                             { required: true, message: '请填写留言!' }
                         ],
-                        initialValue: '已批准',
+                        initialValue: isApprove,
                         validateTrigger: 'onBlur'
                     })(<Input.TextArea
                         autoSize={true}

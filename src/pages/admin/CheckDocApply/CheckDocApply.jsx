@@ -132,22 +132,17 @@ class CheckDocApply extends Component {
                     FirstCol: '申请使用时长',
                     SecondCol: data.lendTimes
                 },
-                data.status === null ? {
+                {
                     key: 'eqDescription',
                     FirstCol: '状态',
-                    SecondCol: '申请中'
-                } : data.status === 1 ?
-                    {
-                        key: 'eqDescription',
-                        FirstCol: '状态',
-                        SecondCol: '已归还'
-                    } :
-                    {
-                        key: 'eqDescription',
-                        FirstCol: '状态',
-                        SecondCol: '使用中'
-                    },
-                data.managerID === null ? {} : {
+                    SecondCol: data.status === null ? '申请中' :
+                        data.status === 0 ? '使用中' :
+                            data.status === 1 ? '已归还' :
+                                data.status === 2 ? '已归还,设备损坏' :
+                                    data.status === -1 ? '设备丢失' :
+                                        data.status === -2 ? '未批准' : ''
+                },
+                {
                     key: 'managerID',
                     FirstCol: '经办人',
                     SecondCol: ManagerList.map((value) => {
@@ -178,7 +173,12 @@ class CheckDocApply extends Component {
                             ID: value.applyID,
                             EqName: resp.data.EquInfoList[index].eqName,
                             lendDate: value.lendDate,
-                            status: value.status === null ? '申请中' : value.status === 0 ? '使用中' : value.status === 1 ? '已归还' : value.status === 2 ? '已归还,设备损坏' : value.status === -1 ? '设备丢失' : '',
+                            status: value.status === null ? '申请中' :
+                                value.status === 0 ? '使用中' :
+                                    value.status === 1 ? '已归还' :
+                                        value.status === 2 ? '已归还,设备损坏' :
+                                            value.status === -1 ? '设备丢失' :
+                                                value.status === -2 ? '未批准' : '',
                             applyID: { ...value, EqName: resp.data.EquInfoList[index].eqName }
                         })
                     })
@@ -210,7 +210,7 @@ class CheckDocApply extends Component {
                 title: '申请时间',
                 dataIndex: 'lendDate',
                 key: 'lendDate',
-                ...this.getColumnSearchProps('type'),
+                ...this.getColumnSearchProps('lendDate'),
             },
             {
                 title: '状态',

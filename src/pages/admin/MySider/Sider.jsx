@@ -30,7 +30,7 @@ class MySider extends Component {
             content: '确认退出吗',
             okText: '确认',
             cancelText: '取消',
-            centered: 'true',
+            centered: true,
             onOk: () => {
                 memoryUtils.User = {};
                 storageUtils.removeUser();

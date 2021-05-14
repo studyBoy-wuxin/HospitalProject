@@ -293,7 +293,11 @@ class MedSearchHeader extends Component {
                                             onChange={() => this.setState({ showSearch: !showSearch })}
                                             style={{ marginTop: 16 }}
                                         />) :
-                                    () => (<center><Button type="primary" htmlType="submit">生成病历单</Button></center>)}
+                                    () => (<center><Button type="primary"
+                                        disabled={RightArr.length === 0 ? true : false}
+                                        htmlType="submit">
+                                        生成病历单
+                                            </Button></center>)}
                             />
                         );
                     }}

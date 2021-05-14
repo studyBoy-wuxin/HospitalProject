@@ -31,24 +31,27 @@ class DocInfo extends Component {
         return () => {
             const { Patient, workInfo } = this.state
             console.log(workInfo[index].Time)
-            const data = { DocInfoID, PatID: Patient.patID, BookedTime: workInfo[index].Time }
+            console.log(workInfo)
+            const data = { DocInfoID, PatID: Patient.patID, BookedTime: `${workInfo[index].Date} ${workInfo[index].Time}`.trim() }
             console.log(data);
             POST('/DocInfoController/updateTreatMes', data)
                 .then(resp => {
+                    console.log(resp.data);
                     if (resp.data === '预约成功') {
                         message.success(resp.data)
-                        this.setState({ Visible: false })
                         //在预约成功后，重新调用componentDidMount方法，更新数据
                         this.componentDidMount()
                     } else if (resp.data === 'UnPass') {
                         message.error('您有尚未支付完成的订单，请先支付完成后再挂号!')
-                        console.log(this.props);
                         this.props.history.push('/userPage/OfficialServer/PayForCost')
+                    } else if (resp.data === 'repetition') {
+                        message.warn("您已有一个相同的预约,请勿重复!")
                     } else {
                         message.error("预约失败")
                     }
+                    this.setState({ Visible: false })
                 })
-                .catch(err => console.log(err.message))
+                .catch(err => message.error(err.message))
         }
     }
 
@@ -85,7 +88,7 @@ class DocInfo extends Component {
                 {
                     key: '5',
                     FirstCol: '就诊时间',
-                    SecondCol: workInfo[index].Time
+                    SecondCol: `${workInfo[index].Date} ${workInfo[index].Time}`
                 },
                 {
                     key: '6',

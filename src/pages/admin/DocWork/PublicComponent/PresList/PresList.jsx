@@ -55,6 +55,10 @@ class PresList extends Component {
             .then(resp => {
                 //这些都是挂了这个医生的 所有 病单以及病人的信息
                 if (resp.data !== 'Nothing') {
+                    resp.data.PresList.forEach((item, index) => {
+                        item.Priority = index + 1
+                    })
+                    console.log(resp.data.PresList);
                     this.setState({
                         AllPresInfo: resp.data.PresList,
                         patBasicMesList: resp.data.patBasicMesList
@@ -67,6 +71,7 @@ class PresList extends Component {
     render() {
         const { AllPresInfo, patBasicMesList } = this.state
         const { type } = this.props
+        console.log(AllPresInfo);
         return (
             <div>
                 <div>
@@ -79,7 +84,10 @@ class PresList extends Component {
                     bordered={true}
                     dataSource={AllPresInfo}
                     renderItem={(item, index) => (
-                        <List.Item key={item + index}>
+                        <List.Item
+                            key={item + index}
+                            extra={type === 'AdminWorkPresList' ? <span>优先级：{item.Priority}</span> : null}
+                        >
                             <a href="/" onClick={this.ShowPrescriptionInfo(index)}>
                                 <List.Item.Meta
                                     avatar={<img style={{ width: '45px', height: '45px' }} src={textImg} alt="文本" />}
