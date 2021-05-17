@@ -239,26 +239,18 @@ class OperateMedEqu extends Component {
                 title: '操作',
                 dataIndex: 'OtherInfo',
                 key: 'OtherInfo',
-                render: (value, record, index) => {
-                    console.log(value, record, index);
-                    return (
-                        <div>
-                            {index === SelectedIndex ?
-                                (<span>
-                                    <Button style={{ display: isOnSure ? 'inline' : 'none' }} type='link' htmlType='submit'>确定</Button>
-                                    <Button style={{ display: isOnSure ? 'none' : 'inline' }} type='link' onClick={this.Update(value)}>修改</Button>
-                                </span>)
-                                : <Button type='link' onClick={this.Update(value)}>修改</Button>}
+                render: (value, _, index) => (
+                    <div>
+                        {index === SelectedIndex ?
+                            (<span>
+                                <Button style={{ display: isOnSure ? 'inline' : 'none' }} type='link' htmlType='submit'>确定</Button>
+                                <Button style={{ display: isOnSure ? 'none' : 'inline' }} type='link' onClick={this.Update(value)}>修改</Button>
+                            </span>)
+                            : <Button type='link' onClick={this.Update(value)}>修改</Button>}
 
-
-                            {/* {index === SelectedIndex ?
-                                <Button type='link' htmlType='submit'>确定</Button>
-                                : <Button type='link' onClick={this.Update(value)}>修改</Button>} */}
-
-                            <Button type='link' onClick={this.delete(value.EqID)}>删除</Button>
-                        </div>
-                    )
-                }
+                        <Button type='link' onClick={this.delete(value.EqID)}>删除</Button>
+                    </div>
+                )
             }
         ];
 
