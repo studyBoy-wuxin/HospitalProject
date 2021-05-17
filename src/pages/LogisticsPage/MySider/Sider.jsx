@@ -61,31 +61,13 @@ class MySider extends Component {
                             <span>查看工作</span>
                         </span>
                     }>
-                        <Menu.Item key="add">
-                            <Link to='/LogisticsPage/DocApply'>
-                                <Icon type="form" />
-                                <span>新增医疗资源</span>
+                        <Menu.Item key="OperateMedEqu">
+                            <Link to='/LogisticsPage/OperateMedEqu'>
+                                <Icon type="edit" />
+                                <span>管理医疗资源</span>
                             </Link>
                         </Menu.Item>
 
-                        <Menu.Item key="delete">
-                            <Link to='/LogisticsPage/CheckDocApply'>
-                                <Icon type="delete" />
-                                <span>删除医疗资源</span>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key="update">
-                            <Link to='/LogisticsPage/CheckDocApply'>
-                                <Icon type="edit" />
-                                <span>修改医疗资源</span>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key="search">
-                            <Link to='/LogisticsPage/CheckDocApply'>
-                                <Icon type="search" />
-                                <span>查询医疗资源</span>
-                            </Link>
-                        </Menu.Item>
                         <Menu.Item key="return">
                             <Link to='/LogisticsPage/ReturnMedEqu'>
                                 <Icon type="form" />

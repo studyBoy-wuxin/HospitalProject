@@ -1,0 +1,21 @@
+
+.OperateMedEqu-Div .ant-table table{
+    table-layout:fixed;
+    word-break:break-all;
+}
+
+.OperateMedEqu-UpdateForm .ant-form-item{
+    margin-bottom: 0;
+}
+
+.expandedRow{    
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.expandedRow .ant-row{
+    width: 500px;
+    position: relative;
+    top: 8px;
+}

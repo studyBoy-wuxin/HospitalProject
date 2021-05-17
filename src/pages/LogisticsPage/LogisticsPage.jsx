@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, BackTop, Icon, Avatar } from 'antd';
 import ReturnMedEqu from './ReturnMedEqu/ReturnMedEqu'
+import OperateMedEqu from './OperateMedEqu/OperateMedEqu'
 import MySider from './MySider/Sider';
 import { Route, Redirect } from 'react-router-dom'
 import memoryUtils from '../../utils/memoryUtils'
@@ -18,7 +19,6 @@ class LogisticsPage extends Component {
             return <Redirect to='/login' />
         }
         const { EmpInfo } = this.state
-        console.log(EmpInfo);
 
         return (
             <Layout style={{ height: '100%' }}>
@@ -41,6 +41,7 @@ class LogisticsPage extends Component {
                     <Content style={{ height: '100%' }}>
                         <div className='LogisticsPage-Content'>
                             <Route path='/LogisticsPage/ReturnMedEqu' component={ReturnMedEqu} />
+                            <Route path='/LogisticsPage/OperateMedEqu' component={OperateMedEqu} />
                         </div>
                     </Content>
 

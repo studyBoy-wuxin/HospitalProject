@@ -7,6 +7,20 @@ import './index.css'
 
 const { Dragger } = Upload;
 let URL = ''
+//展示申请确认表的列
+const columns = [
+    {
+        dataIndex: 'FirstCol',
+        key: 'FirstCol',
+        align: 'center'
+    },
+    {
+        dataIndex: 'SecondCol',
+        key: 'SecondCol',
+        align: 'center'
+    }
+]
+
 class ReturnMedEqu extends Component {
 
     state = {
@@ -275,20 +289,6 @@ class ReturnMedEqu extends Component {
                 )
             }
         ];
-
-        //展示申请确认表的列
-        const columns = [
-            {
-                dataIndex: 'FirstCol',
-                key: 'FirstCol',
-                align: 'center'
-            },
-            {
-                dataIndex: 'SecondCol',
-                key: 'SecondCol',
-                align: 'center'
-            }
-        ]
 
         const props = {
             name: 'URL',
