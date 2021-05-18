@@ -55,13 +55,15 @@ class login extends Component {
 
                     POST('/EmployeeController/Login', values)
                         .then(resp => {
-                            if (resp.data.arg1 === '登陆成功') {
+                            if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department === '医疗部') {
                                 console.log(resp.data)
                                 message.success(resp.data.arg1);      //登陆成功就弹出成功提示       
                                 memoryUtils.User = resp.data.Employee
                                 storageUtils.saveUser(resp.data.Employee)
                                 console.log(memoryUtils)
                                 this.props.history.replace('/admin')
+                            } else if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department !== '医疗部') {
+                                message.warn(`类型错误,您是${resp.data.Employee.department}的成员!`)
                             } else {
                                 message.error(resp.data.arg1)
                             }
@@ -72,13 +74,15 @@ class login extends Component {
                     //管理员登录
                     POST('/EmployeeController/Login', values)
                         .then(resp => {
-                            if (resp.data.arg1 === '登陆成功') {
+                            if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department === '后勤部') {
                                 console.log(resp.data)
                                 message.success(resp.data.arg1);      //登陆成功就弹出成功提示       
                                 memoryUtils.User = resp.data.Employee
                                 storageUtils.saveUser(resp.data.Employee)
                                 console.log(memoryUtils)
                                 this.props.history.replace('/LogisticsPage')
+                            } else if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department !== '后勤部') {
+                                message.warn(`类型错误,您是${resp.data.Employee.department}的成员!`)
                             } else {
                                 message.error(resp.data.arg1)
                             }
@@ -96,8 +100,10 @@ class login extends Component {
         if (memoryUtils.User) {
             if (memoryUtils.User.patID) {
                 return <Redirect to='/userPage/OfficialServer' />
-            } else if (memoryUtils.User.empID) {
+            } else if (memoryUtils.User.department === '医疗部') {
                 return <Redirect to='/admin' />
+            } else if (memoryUtils.User.department === '后勤部') {
+                return <Redirect to='/LogisticsPage' />
             }
         }
 

@@ -37,11 +37,8 @@ class AddComponent extends Component {
 
     AddHandleSubmit = e => {
         e.preventDefault();
-        const { MedEquList } = this.state
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log(MedEquList);
-                console.log(values);
                 POST('/MedEquController/insertMedEqu', { ...values })
                     .then(resp => {
                         if (resp.data === 1) {
@@ -50,7 +47,9 @@ class AddComponent extends Component {
                             values.OtherInfo = { EqID: values.EqID }
                             this.props.form.resetFields()           //重置Form所有组件的状态
                             console.log(values);
-                            this.setState({ MedEquList: [...MedEquList, values], AddVisible: false }, () => console.log(MedEquList))
+                            //调用父组件的更新方法，让新增的内容展示到页面上
+                            this.props.updatePageAfterAdd(values)
+                            this.setState({ AddVisible: false })
                         } else {
                             message.error('新增失败')
                         }

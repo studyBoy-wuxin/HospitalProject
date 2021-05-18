@@ -290,7 +290,6 @@ class InspectApply extends Component {
                             { required: true, message: '请填写留言!' }
                         ],
                         initialValue: isApprove,
-                        validateTrigger: 'onBlur'
                     })(<Input.TextArea
                         autoSize={true}
                         placeholder='请输入留言'

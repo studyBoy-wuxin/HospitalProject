@@ -158,7 +158,7 @@ class DocApply extends Component {
                         EqID: value.eqID,
                         name: value.eqName,
                         type: value.type,
-                        address: value.eqAdress,
+                        address: value.eqAddress,
                         description: value.eqDescription,
                         applyID: value
                     })

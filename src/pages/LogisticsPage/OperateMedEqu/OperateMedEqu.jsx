@@ -126,6 +126,11 @@ class OperateMedEqu extends Component {
         }
     }
 
+    updatePageAfterAdd = values => {
+        const { MedEquList } = this.state
+        this.setState({ MedEquList: [...MedEquList, values] })
+    }
+
     UpdateHandleSubmit = e => {
         e.preventDefault();
         const { SelectedEqID, MedEquList, SelectedIndex } = this.state
@@ -200,7 +205,7 @@ class OperateMedEqu extends Component {
 
     render() {
 
-        const { MedEquList, isOnSure, SelectedIndex, SelectedEqID, expandedRowKeys } = this.state
+        const { MedEquList, isOnSure, SelectedIndex, expandedRowKeys } = this.state
         const { getFieldDecorator } = this.props.form;
         const EquInfocolumns = [
             {
@@ -317,14 +322,13 @@ class OperateMedEqu extends Component {
                 }
             })
         }
-        console.log(SelectedEqID);
         return (
             <div className='OperateMedEqu-Div' style={{ width: '90%' }}>
                 <div>
                     <span style={{ fontWeight: '700' }}>管理医疗资源</span>
                 </div>
                 <Divider />
-                <AddComponent />
+                <AddComponent updatePageAfterAdd={this.updatePageAfterAdd} />
                 <Form onSubmit={this.UpdateHandleSubmit} className='OperateMedEqu-UpdateForm'>
                     <Table
                         rowKey={record => record.EqID}

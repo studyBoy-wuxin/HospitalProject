@@ -36,7 +36,8 @@ class MyLayout extends Component {
                     .then(resp => {
                         console.log(resp)
                         if (resp.data === '修改成功') {
-                            message.success(resp.data);      //登陆成功就弹出成功提示                                                               
+                            message.success(resp.data);      //登陆成功就弹出成功提示        
+                            this.props.form.resetFields()           //重置Form所有组件的状态                                                       
                         } else {
                             message.error(resp.data)
                         }
@@ -47,30 +48,38 @@ class MyLayout extends Component {
     };
 
     componentDidMount() {
+        const { Doctor } = this.state
         const { address, birth } = this.state.Doctor
-        this.setState({
-            AddressPrefix: address.substring(0, address.lastIndexOf("/") + 1),
-            date: birth
-        })
+        POST('/DoctorController/findDocterById', { DocID: Doctor.empID, type: 'doctor' })
+            .then(resp => {
+                console.log(resp.data);
+                this.setState({
+                    AddressPrefix: address.substring(0, address.lastIndexOf("/") + 1),
+                    date: birth,
+                    Doctor: { ...Doctor, branchSubject: resp.data.branchSubject }
+                })
+            })
+            .catch(err => message.error(err.message))
+
     }
 
     //获取到地址选择的数据
-    getAdressPrefix = value => {
+    getAddressPrefix = value => {
         console.log('选择的地址是：', value)
         let result = ''
         value.forEach(date => {
             result += date + '/';
         })
         this.setState({
-            AdressPrefix: result
+            AddressPrefix: result
         })
         console.log(result)
     }
 
     render() {
 
-        const { age, birth, department, empID, name, sex, address, telephone } = this.state.Doctor
-
+        const { age, birth, department, empID, name, sex, address, telephone, branchSubject } = this.state.Doctor
+        console.log(this.state.Doctor);
         const { getFieldDecorator } = this.props.form;
         //定义一个变量为一个Select节点，服务电话号码
         const prefixSelector = (
@@ -101,7 +110,7 @@ class MyLayout extends Component {
         const dataSource = [
             {
                 key: '1',
-                FirstCol: '账号:',
+                FirstCol: '工号:',
                 SecondCol: empID
             },
             {
@@ -137,7 +146,7 @@ class MyLayout extends Component {
             {
                 key: '8',
                 FirstCol: '所在科室:',
-                SecondCol: department
+                SecondCol: `${department}—${branchSubject}科`
             },
             {
                 key: '9',
@@ -235,18 +244,6 @@ class MyLayout extends Component {
                                 <a href="/#">{this.state.AddressPrefix}</a>
                             </Cascader>
                         )} />
-                    )}
-                </Form.Item>
-                )
-            },
-            {
-                key: '7',
-                FirstCol: '所在科室',
-                SecondCol: (<Form.Item>
-                    {getFieldDecorator('Department', {
-                        rules: [{ required: true, message: '所在科室!' }],
-                        initialValue: department
-                    })(<Input />
                     )}
                 </Form.Item>
                 )
