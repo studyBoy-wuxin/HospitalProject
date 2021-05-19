@@ -41,7 +41,7 @@ class RegistrationForm extends Component {
         previewVisible: false,  //点击预览时，跳出对话框
         previewImage: '',
         fileList: [],
-        userName: '张三',
+        userName: '',
         sex: 1,
         age: '',
         AdressPrefix: '广东省/广州市/天河区/'
@@ -186,9 +186,7 @@ class RegistrationForm extends Component {
                                 {getFieldDecorator('Name', {
                                     rules: [
                                         { required: true, message: '请输入您的姓名!' }
-                                    ],
-                                    initialValue: userName,
-                                    validateTrigger: 'onBlur'
+                                    ]
                                 })(<Input
                                     prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="姓名"
@@ -215,7 +213,6 @@ class RegistrationForm extends Component {
                                         { required: true, message: '请输入身份证号码!' },
                                         { pattern: /^[x0-9]{18}$/, message: '请输入18位的身份证号码！' }
                                     ],
-                                    initialValue: '441602200107142215',
                                     validateTrigger: 'onBlur'
                                 })(<Input
                                     placeholder="身份证号码"
@@ -256,8 +253,7 @@ class RegistrationForm extends Component {
 
                             <Form.Item label="电话号码">
                                 {getFieldDecorator('telephone', {
-                                    rules: [{ required: true, message: '请输入你的电话号码!' }],
-                                    initialValue: '18823688283'
+                                    rules: [{ required: true, message: '请输入你的电话号码!' }]
                                 })(<Input addonBefore={prefixSelector} />)}
                             </Form.Item>
 

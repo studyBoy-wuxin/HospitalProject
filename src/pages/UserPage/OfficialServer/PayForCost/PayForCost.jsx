@@ -40,7 +40,8 @@ class PayForCost extends Component {
     }
 
     componentDidMount() {
-        POST('/PatientController/findCostById', { type: 'patient', PatID: 10001 })
+        const { PatInfo } = this.state
+        POST('/PatientController/findCostById', { type: 'patient', PatID: PatInfo.patID })
             .then(resp => {
                 console.log(resp.data)
                 const { docWorkInfo, presInfo, medInfoList, medInPresList, docInfo } = resp.data
