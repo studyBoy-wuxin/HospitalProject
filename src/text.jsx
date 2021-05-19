@@ -1,208 +1,70 @@
 import React, { Component } from 'react';
-import { Table, Input, Button, Popconfirm, Form } from 'antd';
+import { Steps, Button, message } from 'antd';
+import FirstStep from './pages/FindPwd/FirstStep/FirstStep'
+import SecondStep from './pages/FindPwd/SecondStep/SecondStep'
+import PubSub from 'pubsub-js'
 
-const EditableContext = React.createContext();
+const { Step } = Steps;
 
-const EditableRow = ({ form, index, ...props }) => (
-    <EditableContext.Provider value={form}>
-        <tr {...props} />
-    </EditableContext.Provider>
-);
 
-const EditableFormRow = Form.create()(EditableRow);
 
-class EditableCell extends Component {
-    state = {
-        editing: false,
-    };
+class UpdatePwd extends Component {
 
-    toggleEdit = () => {
-        const editing = !this.state.editing;
-        this.setState({ editing }, () => {
-            if (editing) {
-                this.input.focus();
-            }
-        });
-    };
+    state = { current: 0, PatID: '' }
 
-    save = e => {
-        const { record, handleSave } = this.props;
-        this.form.validateFields((error, values) => {
-            if (error && error[e.currentTarget.id]) {
-                return;
-            }
-            this.toggleEdit();
-            handleSave({ ...record, ...values });
-        });
-    };
+    prev() {
+        const current = this.state.current - 1;
+        this.setState({ current });
+    }
 
-    renderCell = form => {
-        this.form = form;
-        const { children, dataIndex, record, title } = this.props;
-        const { editing } = this.state;
-        return editing ? (
-            <Form.Item style={{ margin: 0 }}>
-                {form.getFieldDecorator(dataIndex, {
-                    rules: [
-                        {
-                            required: true,
-                            message: `${title} is required.`,
-                        },
-                    ],
-                    initialValue: record[dataIndex],
-                })(<Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />)}
-            </Form.Item>
-        ) : (
-            <div
-                className="editable-cell-value-wrap"
-                style={{ paddingRight: 24 }}
-                onClick={this.toggleEdit}
-            >
-                {children}
-            </div>
-        );
-    };
+    componentDidMount() {
+        this.token = PubSub.subscribe('current', (_, current) => { this.setState({ current }) })
+        this.token2 = PubSub.subscribe('PatID', (_, PatID) => this.setState({ PatID }))
+    }
+
+    componentWillUnmount() { PubSub.unsubscribe(this.token); PubSub.unsubscribe(this.token2) }
 
     render() {
-        const {
-            editable,
-            dataIndex,
-            title,
-            record,
-            index,
-            handleSave,
-            children,
-            ...restProps
-        } = this.props;
-        return (
-            <td {...restProps}>
-                {editable ? (
-                    <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>
-                ) : (
-                    children
-                )}
-            </td>
-        );
-    }
-}
-
-class EditableTable extends Component {
-    constructor(props) {
-        super(props);
-        this.columns = [
+        const { current, PatID } = this.state
+        console.log(PatID);
+        const steps = [
             {
-                title: 'name',
-                dataIndex: 'name',
-                width: '30%',
-                editable: true,
+                title: '身份验证',
+                content: <FirstStep />,
             },
             {
-                title: 'age',
-                dataIndex: 'age',
+                title: '重置密码',
+                content: PatID === '' ? '' : <SecondStep PatID={PatID} />,
             },
             {
-                title: 'address',
-                dataIndex: 'address',
-            },
-            {
-                title: 'operation',
-                dataIndex: 'operation',
-                render: (text, record) =>
-                    this.state.dataSource.length >= 1 ? (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                            <a href='/'>Delete</a>
-                        </Popconfirm>
-                    ) : null,
+                title: 'Last',
+                content: 'Last-content',
             },
         ];
 
-        this.state = {
-            dataSource: [
-                {
-                    key: '0',
-                    name: 'Edward King 0',
-                    age: '32',
-                    address: 'London, Park Lane no. 0',
-                },
-                {
-                    key: '1',
-                    name: 'Edward King 1',
-                    age: '32',
-                    address: 'London, Park Lane no. 1',
-                },
-            ],
-            count: 2,
-        };
-    }
-
-    handleDelete = key => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
-    };
-
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1,
-        });
-    };
-
-    handleSave = row => {
-        const newData = [...this.state.dataSource];
-        const index = newData.findIndex(item => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, {
-            ...item,
-            ...row,
-        });
-        this.setState({ dataSource: newData });
-    };
-
-    render() {
-        const { dataSource } = this.state;
-        const components = {
-            body: {
-                row: EditableFormRow,
-                cell: EditableCell,
-            },
-        };
-        const columns = this.columns.map(col => {
-            if (!col.editable) {
-                return col;
-            }
-            return {
-                ...col,
-                onCell: record => ({
-                    record,
-                    editable: col.editable,
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    handleSave: this.handleSave,
-                }),
-            };
-        });
         return (
             <div>
-                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                    Add a row
-        </Button>
-                <Table
-                    components={components}
-                    rowClassName={() => 'editable-row'}
-                    bordered
-                    dataSource={dataSource}
-                    columns={columns}
-                />
+                <Steps current={current}>
+                    {steps.map(item => (
+                        <Step key={item.title} title={item.title} />
+                    ))}
+                </Steps>
+                <div className="steps-content">{steps[current].content}</div>
+                <div className="steps-action">
+                    {current === steps.length - 1 && (
+                        <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                            Done
+                        </Button>
+                    )}
+                    {current > 0 && (
+                        <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
+                            Previous
+                        </Button>
+                    )}
+                </div>
             </div>
         );
     }
 }
 
-export default EditableTable;
+export default UpdatePwd;

@@ -57,17 +57,18 @@ class RegistrationForm extends Component {
                 values.Birth = date
                 values.telephone = `${telNum}${values.telephone}`
                 values.Sex = sex
-                values.Adress = this.state.AdressPrefix + values.Adress
+                values.Address = this.state.AdressPrefix + values.Address
                 console.log('获取到的表单数据是：: ', values);
 
                 axios({
                     method: 'post',
                     url: 'http://localhost:8888/HospitalProject/PatientController/insertPatient',
-                    params: values
+                    params: { ...values, type: 'patient' }
                 }).then(
                     resp => {
                         if (resp.data === '注册成功') {
-                            message.success(resp.data);      //登陆成功就弹出成功提示                                                        
+                            message.success(resp.data);      //登陆成功就弹出成功提示          
+                            this.props.history.push('/login')
                         } else {
                             message.error(resp.data)
                         }
@@ -261,7 +262,7 @@ class RegistrationForm extends Component {
                             </Form.Item>
 
                             <Form.Item label="家庭住址">
-                                {getFieldDecorator('Adress', {
+                                {getFieldDecorator('Address', {
                                     rules: [{ required: true, message: '请输入家庭住址!' }],
                                     initialValue: ''
                                 })(<Input
@@ -275,7 +276,7 @@ class RegistrationForm extends Component {
 
                             <Form.Item label="上传证件照">
                                 <Upload
-                                    action={`http://localhost:8888/HospitalProject/PatientController/upload?userName=${userName}`}
+                                    action={`http://localhost:3000/HospitalProject/PatientController/upload?userName=${userName}&type=patient`}
                                     accept='.jpg,.jpeg,.gif,.png'
                                     listType="picture-card"     //显示的样式，还有text，picture
                                     fileList={fileList}     //展示已经上传的文件列表

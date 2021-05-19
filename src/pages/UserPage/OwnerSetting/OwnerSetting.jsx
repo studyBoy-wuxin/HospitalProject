@@ -46,6 +46,7 @@ class OwnerSetting extends Component {
 
     render() {
         const { Patient } = this.props.location.state
+        console.log(this.props);
         return (
             <div className='Setting-box'>
                 <Menu
@@ -62,9 +63,9 @@ class OwnerSetting extends Component {
                         <OwnerMessage Patient={Patient} />
                     </Menu.Item>
 
-                    <Menu.Item key="2">
-                        查看过往病史
-                    </Menu.Item>
+                    {/* <Menu.Item key="2">
+                        修改密码
+                    </Menu.Item> */}
                     <Menu.Item key="3">
                         <span onClick={this.updateOwnerMessage}>修改个人信息</span>
                     </Menu.Item>

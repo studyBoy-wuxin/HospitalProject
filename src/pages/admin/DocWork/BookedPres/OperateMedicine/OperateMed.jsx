@@ -204,7 +204,7 @@ class MedSearchHeader extends Component {
                     TreatmentTime: this.props.TreatTime,
                     TotalPrice
                 }
-
+                console.log(MedList);
                 axios({
                     method: 'POST',
                     url: 'http://localhost:8888/HospitalProject/MedInPrescriptionController/insert',

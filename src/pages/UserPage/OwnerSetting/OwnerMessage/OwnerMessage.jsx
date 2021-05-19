@@ -44,12 +44,14 @@ class OwnerMessage extends Component {
                 values.PatID = this.props.Patient.patID
                 values.Address = this.state.AddressPrefix + values.Address
                 console.log('获取到的表单数据是：: ', values);
-                POST('/PatientController/UpdatePatient', values)
+                POST('/PatientController/UpdatePatient', { ...values, type: 'patient' })
                     .then(
                         resp => {
                             console.log(resp)
                             if (resp.data === '修改成功') {
-                                message.success(resp.data);      //登陆成功就弹出成功提示                                                               
+                                message.success(resp.data);      //登陆成功就弹出成功提示  
+                                this.setState({ ModalVisible: false })
+                                this.props.form.resetFields()           //重置Form所有组件的状态                                                             
                             } else {
                                 message.error(resp.data)
                             }
@@ -65,9 +67,7 @@ class OwnerMessage extends Component {
         })
     }
 
-    componentWillUnmount() {
-        PubSub.unsubscribe(this.token)
-    }
+    componentWillUnmount() { PubSub.unsubscribe(this.token) }
 
     //获取到地址选择的数据
     getAddressPrefix = value => {
@@ -232,7 +232,7 @@ class OwnerMessage extends Component {
                 SecondCol: (<Form.Item>
                     {getFieldDecorator('Address', {
                         rules: [{ required: true, message: '请输入家庭住址!' }],
-                        initialValue: ''
+                        initialValue: address.substring(address.lastIndexOf('/') + 1, address.length)
                     })(<Input
                         addonBefore={(
                             <Cascader

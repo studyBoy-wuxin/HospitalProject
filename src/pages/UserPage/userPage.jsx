@@ -29,19 +29,13 @@ class userPage extends Component {
                 key: '0'
             },
             {
-                Icon: <Icon type="file-text" />,
-                title: 'Second',
-                content: 'Second-content',
-                key: '1'
-            },
-            {
                 Icon: <Icon type="setting" />,
                 title: <NavLink
                     to={{ pathname: '/userPage/OwnerSetting', state: { Patient: this.state.Patient } }}
                     style={{ display: 'inline-block' }}
                 >个人设置</NavLink>,
                 content: <Route path='/userPage/OwnerSetting' component={OwnerSetting} />,
-                key: '2'
+                key: '1'
             },
         ];
 

@@ -32,9 +32,9 @@ class login extends Component {
                                 let Patient = resp.data.Patient
                                 //截取字符串，去掉前面的86等前缀
                                 if (Patient.telephone.substring(0, 2) === '86') {
-                                    Patient.telephone = Patient.telephone.substring(2, Patient.telephone.length - 1)
+                                    Patient.telephone = Patient.telephone.substring(2, Patient.telephone.length)
                                 } else {
-                                    Patient.telephone = Patient.telephone.substring(3, Patient.telephone.length - 1)
+                                    Patient.telephone = Patient.telephone.substring(3, Patient.telephone.length)
                                 }
                                 //把接受来的数据都存到util模块的User.Patient中
                                 memoryUtils.User = Patient
@@ -188,7 +188,7 @@ class login extends Component {
                                         <Checkbox>Remember me</Checkbox>
                                     )
                                 }
-                                <NavLink className="login-form-forgot" to="/FindPWD">忘记密码</NavLink>
+                                <NavLink className="login-form-forgot" to="/FindPwd">忘记密码</NavLink>
                                 <Button type="primary" htmlType="submit" className="login-form-button">
                                     登录
                                 </Button>
