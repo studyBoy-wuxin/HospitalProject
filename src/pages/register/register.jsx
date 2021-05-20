@@ -18,6 +18,7 @@ import moment from 'moment';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from "axios"
 import { Position } from '../../assets/CascaderOption/index'
+import ShowPatInfo from './ShowPatInfo/ShowPatInfo'
 
 const { Option } = Select;
 
@@ -44,7 +45,8 @@ class RegistrationForm extends Component {
         userName: '',
         sex: 1,
         age: '',
-        AdressPrefix: '广东省/广州市/天河区/'
+        AdressPrefix: '广东省/广州市/天河区/',
+        PatID: ''
 
     };
 
@@ -66,9 +68,10 @@ class RegistrationForm extends Component {
                     params: { ...values, type: 'patient' }
                 }).then(
                     resp => {
-                        if (resp.data === '注册成功') {
-                            message.success(resp.data);      //登陆成功就弹出成功提示          
-                            this.props.history.push('/login')
+                        if (resp.data.arg1 === '注册成功') {
+                            message.success(resp.data.arg1);      //登陆成功就弹出成功提示          
+                            // this.props.history.push({ pathname: '/ShowPatInfo', state: { PatID: resp.data.PatID } })
+                            this.setState({ PatID: resp.data.PatID })
                         } else {
                             message.error(resp.data)
                         }
@@ -139,7 +142,7 @@ class RegistrationForm extends Component {
     render() {
 
         const { getFieldDecorator } = this.props.form;
-        const { previewVisible, previewImage, fileList, date, userName, sex, age } = this.state;
+        const { previewVisible, previewImage, fileList, date, userName, sex, age, PatID } = this.state;
 
         //设置的样式
         const formItemLayout = {
@@ -181,6 +184,7 @@ class RegistrationForm extends Component {
                 <section className="register-session">
                     <h2>用户注册</h2>
                     <div>
+                        {PatID === '' ? '' : <ShowPatInfo PatID={PatID} visible={true} />}
                         <Form onSubmit={this.handleSubmit} className="register-form" {...formItemLayout}>
                             <Form.Item label="姓名" hasFeedback >
                                 {getFieldDecorator('Name', {

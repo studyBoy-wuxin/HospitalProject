@@ -322,13 +322,14 @@ class OperateMedEqu extends Component {
                 }
             })
         }
+        console.log(MedEquList);
         return (
             <div className='OperateMedEqu-Div' style={{ width: '90%' }}>
                 <div>
                     <span style={{ fontWeight: '700' }}>管理医疗资源</span>
                 </div>
                 <Divider />
-                <AddComponent updatePageAfterAdd={this.updatePageAfterAdd} />
+                <AddComponent updatePageAfterAdd={this.updatePageAfterAdd} MedEquList={MedEquList} />
                 <Form onSubmit={this.UpdateHandleSubmit} className='OperateMedEqu-UpdateForm'>
                     <Table
                         rowKey={record => record.EqID}

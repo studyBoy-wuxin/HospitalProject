@@ -44,7 +44,7 @@ class AddComponent extends Component {
                         if (resp.data === 1) {
                             message.success('新增成功')
                             values.key = values.EqID
-                            values.OtherInfo = { EqID: values.EqID }
+                            values.OtherInfo = { EqID: values.EqID, index: this.props.MedEquList.length }
                             this.props.form.resetFields()           //重置Form所有组件的状态
                             console.log(values);
                             //调用父组件的更新方法，让新增的内容展示到页面上

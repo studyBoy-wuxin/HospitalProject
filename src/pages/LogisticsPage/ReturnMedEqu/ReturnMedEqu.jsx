@@ -349,7 +349,6 @@ class ReturnMedEqu extends Component {
                     })(<InputNumber
                         step={0.1}
                         className='InputNumber'
-                        // style={{ width: '100%', textAlign: 'right' }}
                         formatter={value => ` ${value}元`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                         parser={value => value.replace(/元\s?|(,*)/g, '')}
                     />)}
