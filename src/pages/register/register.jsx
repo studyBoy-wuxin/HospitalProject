@@ -276,7 +276,7 @@ class RegistrationForm extends Component {
 
                             <Form.Item label="上传证件照">
                                 <Upload
-                                    action={`http://localhost:3000/HospitalProject/PatientController/upload?userName=${userName}&type=patient`}
+                                    action={`http://localhost:8888/HospitalProject/PatientController/upload?userName=${userName}&type=patient`}
                                     accept='.jpg,.jpeg,.gif,.png'
                                     listType="picture-card"     //显示的样式，还有text，picture
                                     fileList={fileList}     //展示已经上传的文件列表

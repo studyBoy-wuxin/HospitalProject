@@ -9,7 +9,7 @@ const { Step } = Steps;
 
 class UpdatePwd extends Component {
 
-    state = { current: 2, PatID: '' }
+    state = { current: 0, PatID: '' }
 
     prev() {
         const current = this.state.current - 1;
