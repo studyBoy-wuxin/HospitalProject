@@ -207,7 +207,7 @@ class MedSearchHeader extends Component {
                 console.log(MedList);
                 axios({
                     method: 'POST',
-                    url: 'http://localhost:8888/HospitalProject/MedInPrescriptionController/insert',
+                    url: 'http://localhost:8888/HospitalMavenProject/MedInPrescriptionController/insert',
                     params: PresMes,
                     data: [...MedList],
                 }).then(resp => {
@@ -227,7 +227,10 @@ class MedSearchHeader extends Component {
                     } else {
                         message.error(resp.data)
                     }
-                }).catch(err => message.error(err.message))
+                }).catch(err => {
+                    message.error(err.message)
+                    console.log(err);
+                })
             }
         });
 
