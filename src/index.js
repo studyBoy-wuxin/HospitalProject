@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from "react-router-dom"
+import { HashRouter } from "react-router-dom"
 import App from './App'
 import memoryUtils from './utils/memoryUtils'
 import storageUtils from './utils/storageUtils'
@@ -11,10 +11,10 @@ import store from './redux/store'
 memoryUtils.User = storageUtils.getUser()
 
 ReactDOM.render(
-    <BrowserRouter>
+    <HashRouter>
         <Provider store={store}>
             <App />
         </Provider>
-    </BrowserRouter>
+    </HashRouter>
     , document.getElementById('root')
 );

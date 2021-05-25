@@ -22,6 +22,7 @@ class login extends Component {
                 values.type = this.state.type
                 console.log(values)
                 //判断身份
+
                 if (values.type === 'patient') {
                     //在传输的数据中添加一个PatID属性
                     values.PatID = values.ID
@@ -39,8 +40,11 @@ class login extends Component {
                                 //把接受来的数据都存到util模块的User.Patient中
                                 memoryUtils.User = Patient
                                 console.log(memoryUtils)
-                                //还要把接受来的数据存放到util模块中的storageUtils中
-                                storageUtils.saveUser(Patient)
+                                //如果点击了记住密码
+                                if (values.remember === true) {
+                                    //还要把接受来的数据存放到util模块中的storageUtils中
+                                    storageUtils.saveUser(Patient)
+                                }
                                 //使用浏览器的history来进行栈的压缩，实现页面变化
                                 this.props.history.replace('/userPage/OfficialServer')
 
@@ -57,10 +61,12 @@ class login extends Component {
                         .then(resp => {
                             if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department === '医疗部') {
                                 console.log(resp.data)
-                                message.success(resp.data.arg1);      //登陆成功就弹出成功提示       
+                                message.success(resp.data.arg1);      //登陆成功就弹出成功提示    
                                 memoryUtils.User = resp.data.Employee
-                                storageUtils.saveUser(resp.data.Employee)
                                 console.log(memoryUtils)
+                                if (values.remember === true) {
+                                    storageUtils.saveUser(resp.data.Employee)
+                                }
                                 this.props.history.replace('/admin')
                             } else if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department !== '医疗部') {
                                 message.warn(`类型错误,您是${resp.data.Employee.department}的成员!`)
@@ -76,10 +82,13 @@ class login extends Component {
                         .then(resp => {
                             if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department === '后勤部') {
                                 console.log(resp.data)
-                                message.success(resp.data.arg1);      //登陆成功就弹出成功提示       
+                                message.success(resp.data.arg1);      //登陆成功就弹出成功提示    
                                 memoryUtils.User = resp.data.Employee
-                                storageUtils.saveUser(resp.data.Employee)
                                 console.log(memoryUtils)
+                                if (values.remember === true) {
+                                    storageUtils.saveUser(resp.data.Employee)
+                                }
+
                                 this.props.history.replace('/LogisticsPage')
                             } else if (resp.data.arg1 === '登陆成功' && resp.data.Employee.department !== '后勤部') {
                                 message.warn(`类型错误,您是${resp.data.Employee.department}的成员!`)
