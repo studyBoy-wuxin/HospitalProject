@@ -52,7 +52,7 @@ class UpdatePwd extends Component {
                     <div className="steps-content">{steps[current].content}</div>
                     <div className="steps-action">
                         <p style={{ textAlign: 'end' }}>
-                            {current > 0 && (
+                            {current > 0 && current !== steps.length - 1 && (
                                 <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
                                     Previous
                                 </Button>
