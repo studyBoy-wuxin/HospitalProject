@@ -108,8 +108,14 @@ class OperateMedEqu extends Component {
                             if (resp.data === 1) {
                                 message.success('删除成功!')
                                 const newMedEquList = []
+                                //找到被删除的元素的索引index
+                                const compareIndex = MedEquList[MedEquList.findIndex(item => item.EqID === EqID)].OtherInfo.index
                                 MedEquList.forEach(value => {
                                     if (value.key !== EqID) {
+                                        if (value.OtherInfo.index > compareIndex) {
+                                            //如果元素的index比被删除的元素索引大，那么就在原有基础减一(因为只删除了一个元素)
+                                            value.OtherInfo.index = value.OtherInfo.index - 1
+                                        }
                                         newMedEquList.push(value)
                                     }
                                 })
